@@ -106,7 +106,7 @@ The GC-SDOH assessment draws from established, validated screening tools:
 
 ## Contributing
 
-We welcome contributions from:
+GiveCare Tools warmly welcomes community contributions! We welcome contributions from:
 
 - **Developers** - Code, SDKs, integrations, and tools
 - **Healthcare Professionals** - Clinical validation and use case feedback
@@ -114,7 +114,11 @@ We welcome contributions from:
 - **Social Workers** - Resource mapping and intervention strategies
 - **Caregivers** - User experience and assessment feedback
 
-Please read our [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on:
+Please open an issue or PR if you encounter bugs or other pain points during your development, or start a discussion for more open-ended questions.
+
+Please note that the core GC-SDOH framework is intended to be a relatively lightweight set of reusable components rather than an exhaustive catalog of assessment tools. Consider sharing any specialized assessments you create with the community.
+
+For detailed guidelines, please read our [CONTRIBUTING.md](CONTRIBUTING.md) for:
 - Code contributions
 - Documentation improvements
 - Issue reporting
@@ -152,11 +156,18 @@ Organizations implementing these tools are responsible for ensuring compliance w
 
 ## Citation
 
+Originally created by Ali Madad (@amadad).
+
 If you use the GC-SDOH assessment in research or clinical practice, please cite:
 
-```
-GiveCare GC-SDOH Assessment Framework. (2025).
-GiveCare Tools. https://github.com/[your-org]/give-care-tools
+```bibtex
+@misc{madad_givecare_tools_2025,
+  author       = {Ali Madad},
+  title        = {{GiveCare Tools}: Open-source frameworks for caregiving support and social determinants of health assessment},
+  howpublished = {\url{https://github.com/[your-org]/give-care-tools}},
+  note         = {Commit [hash] • accessed [date]},
+  year         = {2025}
+}
 ```
 
 ## License
