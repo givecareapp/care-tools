@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "echo \"No tests specified\""
+    "test": "npm run build && node --test test/*.test.js"
   },
   "devDependencies": {
     "typescript": "^5.3.3"
