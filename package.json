@@ -1,0 +1,18 @@
+{
+  "name": "gc-sdoh-scoring-sdk",
+  "version": "0.1.0",
+  "description": "TypeScript scoring SDK for the GC-SDOH-30 assessment.",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "echo \"No tests specified\""
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}

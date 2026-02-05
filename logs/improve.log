@@ -1,0 +1,95 @@
+🔮 Nightly Improvement Agent: care-tools
+   Date: 2026-01-27
+📝 Running code review...
+🔬 Running research agent...
+✨ Running feature discovery...
+
+✅ Report saved: /home/deploy/projects/care-tools/reports/improve-2026-01-27.md
+# Nightly Improvement Report - 2026-01-27
+
+**Project**: care-tools
+**Generated**: 2026-01-27T05:30:01Z
+
+## Code Review
+
+### TODOs & FIXMEs
+None found ✓
+
+### Large Files (>500 lines)
+None found ✓
+
+### Dependency Health
+
+### Recent Activity
+```
+
+```
+
+## Research
+
+### Research for: care-tools
+
+#### Papers & Articles
+
+**Query**: social determinants of health assessment AI
+- Search: https://scholar.google.com/scholar?q=social+determinants+of+health+assessment+AI
+
+**Query**: SDOH screening tools
+- Search: https://scholar.google.com/scholar?q=SDOH+screening+tools
+
+**Query**: caregiver support technology
+- Search: https://scholar.google.com/scholar?q=caregiver+support+technology
+
+#### Related Repositories
+
+
+
+#### Dependency Updates
+
+Check for major updates in key dependencies that might offer new capabilities.
+
+#### Suggested Techniques
+
+- **Validated Instruments**: Integrate established SDOH screeners (PRAPARE, AHC)
+- **Multi-language Support**: Expand assessment reach
+- **Risk Scoring**: ML models for intervention prioritization
+- **Interoperability**: FHIR integration for EHR systems
+
+---
+*Research generated: 2026-01-27*
+
+## Feature & Improvement Ideas
+
+No new specs generated (no actionable items found)
+
+## Summary
+
+- TODOs found: 0
+0
+- Large files: 0
+0
+- Specs created: 0
+
+🤖 AI Code Review: care-tools (using claude)
+Running Claude Code review...
+✅ Review saved: /home/deploy/projects/care-tools/reports/ai-review-2026-01-27.md
+
+📋 Quick wins found:
+🤖 AI Code Review: care-tools (using claude)
+📖 Loaded nightly brief for context
+Running Claude Code review...
+✅ Review saved: /home/deploy/gc-repos/care-tools/reports/ai-review-2026-01-28.md
+
+📋 Quick wins found:
+- Q27: "I feel prepared for caregiving emergencies" (emergency preparedness)
+- Q28: "I feel safe in my neighborhood" (physical safety)
+
+Neither question measures emotional wellbeing (depression, anxiety, burnout). The zone resources at line 210 list "mental health services" but the questions don't screen for mental health. This is a content-validity issue: the zone label promises something the questions don't deliver. Compare to P1 Q4 ("I can talk to others about my caregiving challenges") which is closer to emotional wellbeing than anything in P6.
+--
+- Spec 002 (scoring contradiction for reverse items) and spec 013 (fix Q29 reverse-scoring omission) address the same root cause
+- Spec 004 (Q29 scoring direction is ambiguous) is the diagnostic finding; spec 013 is the fix
+
+This isn't necessarily wrong, but it means completing spec 013 should also close specs 002 and 004. There's no linkage mechanism between specs to prevent duplicate work.
+/bin/sh: 1: /home/deploy/clawd/skills/ralph-wiggum/scripts/ai-review.sh: not found
+/bin/sh: 1: /home/deploy/clawd/skills/ralph-wiggum/scripts/ai-review.sh: not found
+/bin/sh: 1: /home/deploy/clawd/skills/ralph-wiggum/scripts/ai-review.sh: not found

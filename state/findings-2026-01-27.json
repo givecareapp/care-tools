@@ -1,0 +1,155 @@
+[
+  {
+    "title": "Zone ordering is inconsistent in `GC-SDOH.md`",
+    "effort": "unknown",
+    "slug": "zone-ordering-is-inconsistent-in-gc-sdoh-md",
+    "source": "ai-review-2026-01-27",
+    "status": "actioned",
+    "type": "improvement",
+    "body": "\nThe questions are presented **out of zone order**: P1 (Q1-8), then P3 (Q9-12), then P4 (Q13-20), then P5 (Q21-26), then P6 (Q27-28), then P2 (Q29-30). The header at `GC-SDOH.md:10-16` lists zones P1-P6 in numeric order, but P2 (Physical Health) appears last in the actual questions (`GC-SDOH.md:214`), after P6. This makes the document confusing to read and prone to implementation errors where developers may mismap questions to zones."
+  },
+  {
+    "title": "Scoring contradiction for reverse-scored items",
+    "effort": "unknown",
+    "slug": "scoring-contradiction-for-reverse-scored-items",
+    "source": "ai-review-2026-01-27",
+    "status": "actioned",
+    "type": "improvement",
+    "body": "\n`GC-SDOH.md:22` states \"Questions 11, 13-19 are reverse-scored (higher values indicate greater need).\" But the risk threshold at `GC-SDOH.md:254` says **High Risk = zone score < 2.5**. If reverse-scored items aren't actually normalized before averaging, the Financial zone (P4) — which has 7 of 8 questions reverse-scored — will produce inverted risk assessments. The document says \"scoring normalization handles this automatically\" but never specifies the normalization formula. This is a critical gap for implementers."
+  },
+  {
+    "title": "Scoring scale mismatch between documents",
+    "effort": "unknown",
+    "slug": "scoring-scale-mismatch-between-documents",
+    "source": "ai-review-2026-01-27",
+    "status": "actioned",
+    "type": "improvement",
+    "body": "\n`GC-SDOH.md:249-254` uses a **1-5 scale** for risk thresholds (Low ≥ 3.5, Moderate 2.5-3.49, High < 2.5). `docs/ADAPTIVE-ASSESSMENT-PATTERN.md:294` uses a **0-100 scale** (`score = (answer - 1) / 4 * 100`). The risk threshold in the adaptive doc at line 309 uses `>50` on the 0-100 scale, which maps to 3.0 on the 1-5 scale — placing it in the \"Moderate\" range per the main doc, not at the Low/Moderate boundary (3.5). These two documents will produce different risk classifications for the same responses."
+  },
+  {
+    "title": "Question 29 scoring direction is ambiguous",
+    "effort": "unknown",
+    "slug": "question-29-scoring-direction-is-ambiguous",
+    "source": "ai-review-2026-01-27",
+    "status": "actioned",
+    "type": "improvement",
+    "body": "\n`GC-SDOH.md:216-218` — \"How often do you feel physically exhausted from caregiving?\" uses 1=Never to 5=Always. Higher scores mean *worse* outcomes, but Q29 is **not** listed as reverse-scored (`GC-SDOH.md:22` only lists Q11, Q13-19). This means physical exhaustion will be counted as a *positive* indicator, inflating P2 scores and hiding health risk."
+  },
+  {
+    "title": "Question 30 uses a different scale type",
+    "effort": "unknown",
+    "slug": "question-30-uses-a-different-scale-type",
+    "source": "ai-review-2026-01-27",
+    "status": "actioned",
+    "type": "improvement",
+    "body": "\n`GC-SDOH.md:222-224` uses \"Very Poor / Poor / Fair / Good / Excellent\" instead of the \"Never / Rarely / Sometimes / Often / Always\" frequency scale used by all other questions. While the numeric values are 1-5, the semantic meaning differs. The document claims \"consistent 1-5 scale\" (`GC-SDOH.md:5`) but Q30 breaks that consistency. Implementers building a uniform UI will need special handling.\n\n---"
+  },
+  {
+    "title": "Constitution is an unfilled template",
+    "effort": "unknown",
+    "slug": "constitution-is-an-unfilled-template",
+    "source": "ai-review-2026-01-27",
+    "status": "actioned",
+    "type": "improvement",
+    "body": "\n`.specify/memory/constitution.md` — every field is a placeholder (`[Describe what this project does]`). Since `CLAUDE.md` and `AGENTS.md` both point to this file as the primary instruction source, agents running against this repo will operate without defined purpose, tech stack, or principles."
+  },
+  {
+    "title": "`CONTRIBUTING.md` referenced but missing",
+    "effort": "unknown",
+    "slug": "contributing-md-referenced-but-missing",
+    "source": "ai-review-2026-01-27",
+    "status": "actioned",
+    "type": "improvement",
+    "body": "\n`README.md:6` has a badge linking to `CONTRIBUTING.md`, and `README.md:126` directs contributors to read it. The file doesn't exist. This is a broken contract with potential contributors."
+  },
+  {
+    "title": "Placeholder URLs throughout",
+    "effort": "unknown",
+    "slug": "placeholder-urls-throughout",
+    "source": "ai-review-2026-01-27",
+    "status": "actioned",
+    "type": "improvement",
+    "body": "\n`README.md:87`, `README.md:173`, and `LICENSE:33,39` all reference `[your-org]` in GitHub URLs instead of the actual org (`givecareapp`). The actual repo is at `github.com/givecareapp/care-tools` but these placeholders will send users to broken links."
+  },
+  {
+    "title": "`GC-SDOH.md:321` has placeholder contact info",
+    "effort": "unknown",
+    "slug": "gc-sdoh-md-321-has-placeholder-contact-info",
+    "source": "ai-review-2026-01-27",
+    "status": "actioned",
+    "type": "improvement",
+    "body": "\nThe contact section reads `[Contact information]` — a visible placeholder in what's otherwise a publication-ready document."
+  },
+  {
+    "title": "Example spec still present",
+    "effort": "unknown",
+    "slug": "example-spec-still-present",
+    "source": "ai-review-2026-01-27",
+    "status": "actioned",
+    "type": "improvement",
+    "body": "\n`specs/000-example/spec.md` is a self-documenting example that says \"delete me.\" Its continued presence suggests the agent workflow hasn't been exercised yet, and it clutters the specs directory.\n\n---"
+  },
+  {
+    "title": "No scoring validation exists",
+    "effort": "unknown",
+    "slug": "no-scoring-validation-exists",
+    "source": "ai-review-2026-01-27",
+    "status": "actioned",
+    "type": "improvement",
+    "body": "\nThere are zero test cases, reference implementations, or worked examples showing expected scores for given inputs. A caregiver answering all 5's should produce known zone scores — but no reference output is documented. This is essential for any implementer to verify correctness."
+  },
+  {
+    "title": "Adaptive assessment lacks concrete question mapping",
+    "effort": "unknown",
+    "slug": "adaptive-assessment-lacks-concrete-question-mapping",
+    "source": "ai-review-2026-01-27",
+    "status": "actioned",
+    "type": "improvement",
+    "body": "\n`docs/ADAPTIVE-ASSESSMENT-PATTERN.md:27-34` describes selecting Quick-6 questions by \"highest item-total correlation\" but doesn't specify which questions to use. Without a defined Quick-6 question set, the adaptive pattern can't be implemented or tested.\n\n---"
+  },
+  {
+    "title": "Fix Q29 reverse-scoring omission",
+    "effort": "unknown",
+    "slug": "fix-q29-reverse-scoring-omission",
+    "source": "ai-review-2026-01-27",
+    "status": "actioned",
+    "type": "improvement",
+    "body": "**Impact: High | Effort: Low**\nAdd Q29 to the reverse-scored list at `GC-SDOH.md:22` and update the regular scoring list at `GC-SDOH.md:235`. Without this, every P2 Physical Health zone score will be inverted."
+  },
+  {
+    "title": "Add a scoring reference table with worked examples",
+    "effort": "unknown",
+    "slug": "add-a-scoring-reference-table-with-worked-examples",
+    "source": "ai-review-2026-01-27",
+    "status": "actioned",
+    "type": "improvement",
+    "body": "**Impact: High | Effort: Medium**\nAdd a section to `GC-SDOH.md` after line 260 with 2-3 sample respondent profiles, their raw answers, reverse-score normalization, zone averages, and resulting risk classifications. This prevents every implementer from independently guessing the scoring logic."
+  },
+  {
+    "title": "Reconcile risk threshold scales between documents",
+    "effort": "unknown",
+    "slug": "reconcile-risk-threshold-scales-between-documents",
+    "source": "ai-review-2026-01-27",
+    "status": "actioned",
+    "type": "improvement",
+    "body": "**Impact: High | Effort: Low**\nPick one scale (1-5 or 0-100) and use it consistently, or add explicit conversion formulas. Update the adaptive doc threshold at `docs/ADAPTIVE-ASSESSMENT-PATTERN.md:309` to align with the main risk thresholds."
+  },
+  {
+    "title": "Fill in the constitution and fix placeholder URLs",
+    "effort": "unknown",
+    "slug": "fill-in-the-constitution-and-fix-placeholder-urls",
+    "source": "ai-review-2026-01-27",
+    "status": "actioned",
+    "type": "improvement",
+    "body": "**Impact: Medium | Effort: Low**\nPopulate `.specify/memory/constitution.md` with actual project info. Find-replace `[your-org]` with `givecareapp` across `README.md` and `LICENSE`. Replace `[Contact information]` in `GC-SDOH.md:321`."
+  },
+  {
+    "title": "Reorder questions by zone in `GC-SDOH.md`",
+    "effort": "unknown",
+    "slug": "reorder-questions-by-zone-in-gc-sdoh-md",
+    "source": "ai-review-2026-01-27",
+    "status": "actioned",
+    "type": "improvement",
+    "body": "**Impact: Medium | Effort: Low**\nPresent P2 questions in their numeric position (after P1) rather than at the end of the document. Alternatively, renumber questions so zone order matches question order. The current arrangement invites mapping bugs."
+  }
+]

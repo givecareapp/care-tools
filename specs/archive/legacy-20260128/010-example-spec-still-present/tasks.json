@@ -1,0 +1,60 @@
+{
+  "spec": "010-example-spec-still-present",
+  "tasks": [
+    {
+      "id": "T-001",
+      "title": "Investigate example spec directory contents",
+      "description": "Examine the specs/000-example/ directory to understand what files exist and confirm it is the self-documenting example intended for deletion.",
+      "acceptanceCriteria": [
+        "Run `ls -la /home/deploy/gc-repos/care-tools/specs/000-example/` — exits with code 0 and lists files present"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T-002",
+      "title": "Check for references to specs/000-example across the project",
+      "description": "Search the entire care-tools project for any imports, references, or links pointing to specs/000-example to ensure safe removal without breaking anything.",
+      "acceptanceCriteria": [
+        "Run `grep -r '000-example' /home/deploy/gc-repos/care-tools/ --include='*.md' --include='*.ts' --include='*.js' --include='*.json' --include='*.yaml' --include='*.yml' -l` — output is reviewed and any references are catalogued"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T-003",
+      "title": "Delete specs/000-example directory",
+      "description": "Remove the entire specs/000-example/ directory since it is a self-documenting placeholder that says 'delete me' and clutters the specs directory.",
+      "acceptanceCriteria": [
+        "Run `test ! -d /home/deploy/gc-repos/care-tools/specs/000-example` — exits with code 0",
+        "Run `ls /home/deploy/gc-repos/care-tools/specs/000-example 2>&1` — exits with non-zero code"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T-004",
+      "title": "Remove any remaining references to 000-example",
+      "description": "Clean up any references found in T-002 that point to the now-deleted specs/000-example directory, such as index files, READMEs, or configuration.",
+      "acceptanceCriteria": [
+        "Run `grep -r '000-example' /home/deploy/gc-repos/care-tools/ -l` — returns 0 matches (exit code 1 from grep indicating no matches)"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T-005",
+      "title": "Verify build succeeds after deletion",
+      "description": "Run the project build command to confirm that removing the example spec causes no build regressions.",
+      "acceptanceCriteria": [
+        "Run `cd /home/deploy/gc-repos/care-tools && echo 'no build configured'` — exits with code 0"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T-006",
+      "title": "Verify tests pass after deletion",
+      "description": "Run the project test command to confirm that removing the example spec causes no test regressions.",
+      "acceptanceCriteria": [
+        "Run `cd /home/deploy/gc-repos/care-tools && echo 'no test configured'` — exits with code 0"
+      ],
+      "passes": false
+    }
+  ]
+}
