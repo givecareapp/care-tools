@@ -4,7 +4,7 @@
 - [x] 1.1 Define spec, scope, and acceptance criteria
 
 ## 2. Implementation
-- [ ] 2.1 [Task]
+- [x] 2.1 [Task]
 
 ## 3. Testing
 - [ ] 3.1 [Task]
