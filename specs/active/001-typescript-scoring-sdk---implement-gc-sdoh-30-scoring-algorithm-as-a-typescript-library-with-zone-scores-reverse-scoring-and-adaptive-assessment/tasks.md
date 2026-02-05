@@ -7,4 +7,4 @@
 - [x] 2.1 [Task]
 
 ## 3. Testing
-- [ ] 3.1 [Task]
+- [x] 3.1 [Task]
