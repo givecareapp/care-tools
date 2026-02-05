@@ -241,3 +241,246 @@ export const GC_SDOH_30_ZONES: readonly ZoneDefinition[] = [
 ];
 
 export const GC_SDOH_30_REVERSE_SCORED_IDS = reverseScoredIds;
+
+export type ResponseMap = Record<number, number>;
+
+export type ZoneRiskLevel = "low" | "moderate" | "high";
+
+export type OverallRiskLevel = "low" | "moderate" | "high";
+
+export interface ValidationError {
+  questionId: number;
+  code: "unknown_question" | "out_of_range" | "missing_response";
+  message: string;
+  value?: number;
+}
+
+export interface ZoneScoreResult {
+  zoneId: ZoneId;
+  score: number | null;
+  risk: ZoneRiskLevel | null;
+  answered: number;
+  total: number;
+}
+
+export interface FullAssessmentResult {
+  zones: Record<ZoneId, ZoneScoreResult>;
+  overallRisk: OverallRiskLevel | null;
+  errors: ValidationError[];
+}
+
+export interface AdaptiveZoneScore {
+  zoneId: ZoneId;
+  score: number | null;
+  confidence: number;
+  answered: number;
+  total: number;
+}
+
+export interface AdaptiveAssessmentResult {
+  zones: Record<ZoneId, AdaptiveZoneScore>;
+  errors: ValidationError[];
+}
+
+const questionById = new Map<number, QuestionDefinition>(
+  GC_SDOH_30_QUESTIONS.map((question) => [question.id, question]),
+);
+
+const zoneById = new Map<ZoneId, ZoneDefinition>(
+  GC_SDOH_30_ZONES.map((zone) => [zone.id, zone]),
+);
+
+const MIN_RESPONSE = 1;
+const MAX_RESPONSE = 5;
+
+const isValidResponseValue = (value: unknown): value is number =>
+  typeof value === "number" && Number.isFinite(value) && value >= MIN_RESPONSE && value <= MAX_RESPONSE;
+
+const normalizeResponseValue = (questionId: number, value: number): number => {
+  const question = questionById.get(questionId);
+  if (!question) {
+    return value;
+  }
+  return question.reverseScored ? MAX_RESPONSE + MIN_RESPONSE - value : value;
+};
+
+const normalizeResponseToScore = (questionId: number, value: number): number => {
+  const normalized = normalizeResponseValue(questionId, value);
+  return ((normalized - MIN_RESPONSE) / (MAX_RESPONSE - MIN_RESPONSE)) * 100;
+};
+
+const mean = (values: readonly number[]): number =>
+  values.reduce((total, value) => total + value, 0) / values.length;
+
+const buildZoneScores = (
+  responses: ResponseMap,
+  scoreScale: "1-5" | "0-100",
+): Record<ZoneId, { score: number | null; answered: number; total: number }> => {
+  const scores = {} as Record<ZoneId, { score: number | null; answered: number; total: number }>;
+
+  for (const zone of GC_SDOH_30_ZONES) {
+    const values: number[] = [];
+
+    for (const questionId of zone.questionIds) {
+      const response = responses[questionId];
+      if (!isValidResponseValue(response)) {
+        continue;
+      }
+      const normalized =
+        scoreScale === "0-100"
+          ? normalizeResponseToScore(questionId, response)
+          : normalizeResponseValue(questionId, response);
+      values.push(normalized);
+    }
+
+    const answered = values.length;
+    const total = zone.questionIds.length;
+    const score = answered > 0 ? mean(values) : null;
+    scores[zone.id] = { score, answered, total };
+  }
+
+  return scores;
+};
+
+export const getQuestionDefinition = (questionId: number): QuestionDefinition | undefined =>
+  questionById.get(questionId);
+
+export const getZoneDefinition = (zoneId: ZoneId): ZoneDefinition | undefined => zoneById.get(zoneId);
+
+export const validateResponses = (responses: ResponseMap): ValidationError[] => {
+  const errors: ValidationError[] = [];
+
+  for (const [rawId, rawValue] of Object.entries(responses)) {
+    const questionId = Number(rawId);
+    const question = Number.isInteger(questionId) ? questionById.get(questionId) : undefined;
+
+    if (!question) {
+      errors.push({
+        questionId: Number.isFinite(questionId) ? questionId : -1,
+        code: "unknown_question",
+        message: `Unknown question ID: ${rawId}`,
+        value: typeof rawValue === "number" ? rawValue : undefined,
+      });
+      continue;
+    }
+
+    if (!isValidResponseValue(rawValue)) {
+      errors.push({
+        questionId,
+        code: "out_of_range",
+        message: `Response for question ${questionId} must be between ${MIN_RESPONSE} and ${MAX_RESPONSE}.`,
+        value: typeof rawValue === "number" ? rawValue : undefined,
+      });
+    }
+  }
+
+  return errors;
+};
+
+export const classifyZoneRisk = (score: number): ZoneRiskLevel => {
+  if (score >= 3.5) {
+    return "low";
+  }
+  if (score >= 2.5) {
+    return "moderate";
+  }
+  return "high";
+};
+
+export const classifyOverallRisk = (
+  zoneRisks: Record<ZoneId, ZoneRiskLevel>,
+  options?: { critical?: boolean },
+): OverallRiskLevel => {
+  if (options?.critical) {
+    return "high";
+  }
+
+  const risks = Object.values(zoneRisks);
+  const highCount = risks.filter((risk) => risk === "high").length;
+
+  if (highCount >= 3) {
+    return "high";
+  }
+
+  if (highCount >= 1) {
+    return "moderate";
+  }
+
+  const allLow = risks.every((risk) => risk === "low");
+  return allLow ? "low" : "moderate";
+};
+
+export const scoreFullAssessment = (
+  responses: ResponseMap,
+  options?: { critical?: boolean },
+): FullAssessmentResult => {
+  const errors = validateResponses(responses);
+  const baseScores = buildZoneScores(responses, "1-5");
+  const zones = {} as Record<ZoneId, ZoneScoreResult>;
+  const zoneRisks = {} as Record<ZoneId, ZoneRiskLevel>;
+  let hasIncomplete = false;
+
+  for (const zone of GC_SDOH_30_ZONES) {
+    const baseScore = baseScores[zone.id];
+    const answered = baseScore.answered;
+    const total = baseScore.total;
+    const isComplete = answered === total;
+
+    if (!isComplete) {
+      hasIncomplete = true;
+      for (const questionId of zone.questionIds) {
+        if (responses[questionId] === undefined) {
+          errors.push({
+            questionId,
+            code: "missing_response",
+            message: `Missing response for question ${questionId}.`,
+          });
+        }
+      }
+    }
+
+    const score = isComplete ? baseScore.score : null;
+    const risk = score !== null ? classifyZoneRisk(score) : null;
+    if (risk) {
+      zoneRisks[zone.id] = risk;
+    }
+
+    zones[zone.id] = {
+      zoneId: zone.id,
+      score,
+      risk,
+      answered,
+      total,
+    };
+  }
+
+  let overallRisk: OverallRiskLevel | null = null;
+  if (options?.critical) {
+    overallRisk = "high";
+  } else if (!hasIncomplete) {
+    overallRisk = classifyOverallRisk(zoneRisks);
+  }
+
+  return { zones, overallRisk, errors };
+};
+
+export const scoreAdaptiveAssessment = (responses: ResponseMap): AdaptiveAssessmentResult => {
+  const errors = validateResponses(responses);
+  const baseScores = buildZoneScores(responses, "0-100");
+  const zones = {} as Record<ZoneId, AdaptiveZoneScore>;
+
+  for (const zone of GC_SDOH_30_ZONES) {
+    const baseScore = baseScores[zone.id];
+    const confidence = baseScore.total > 0 ? baseScore.answered / baseScore.total : 0;
+
+    zones[zone.id] = {
+      zoneId: zone.id,
+      score: baseScore.score,
+      confidence,
+      answered: baseScore.answered,
+      total: baseScore.total,
+    };
+  }
+
+  return { zones, errors };
+};
