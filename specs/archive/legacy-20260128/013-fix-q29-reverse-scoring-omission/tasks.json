@@ -1,0 +1,72 @@
+{
+  "spec": "013-fix-q29-reverse-scoring-omission",
+  "tasks": [
+    {
+      "id": "T-001",
+      "title": "Investigate all Q29 scoring references in GC-SDOH.md",
+      "description": "Identify every location in GC-SDOH.md that references reverse-scored questions, regular-scored questions, or the P2 zone scoring, to map the full scope of changes needed.",
+      "acceptanceCriteria": [
+        "Run `grep -n '13-19\\|reverse.scored\\|Regular scoring\\|P2: Physical Health' /home/deploy/gc-repos/care-tools/GC-SDOH.md` — returns matches on at least lines 22, 92, 235, 236, and 243"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T-002",
+      "title": "Add reverse-scored annotation to Question 29",
+      "description": "Add the *(Reverse-scored)* inline annotation to Q29's question text on line 216, matching the pattern used by Q11, Q13-Q19.",
+      "acceptanceCriteria": [
+        "File `/home/deploy/gc-repos/care-tools/GC-SDOH.md` contains the string 'How often do you feel physically exhausted from caregiving? *(Reverse-scored)*'"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T-003",
+      "title": "Add Q29 to reverse-scored list at line 22",
+      "description": "Update the introductory note on line 22 to include Q29 in the reverse-scored enumeration, changing '11, 13-19' to '11, 13-19, 29'.",
+      "acceptanceCriteria": [
+        "File `/home/deploy/gc-repos/care-tools/GC-SDOH.md` contains the string 'Questions 11, 13-19, 29 are reverse-scored'"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T-004",
+      "title": "Remove Q29 from regular-scored list at line 235",
+      "description": "Update the regular scoring line to exclude Q29 by changing '20-28, 30' to '20-28, 30' with 29 not in the range. Since 29 was implicitly included in a prior range, adjust to list '20-28, 30' explicitly without 29.",
+      "acceptanceCriteria": [
+        "File `/home/deploy/gc-repos/care-tools/GC-SDOH.md` contains 'Regular scoring:** Higher values indicate better outcomes (questions 1-10, 12, 20-28, 30)'",
+        "Run `grep 'Regular scoring' /home/deploy/gc-repos/care-tools/GC-SDOH.md` — output does not contain '29'"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T-005",
+      "title": "Add Q29 to reverse-scored list at line 236",
+      "description": "Update the reverse scoring line in the Scoring & Interpretation section to include Q29, changing '11, 13-19' to '11, 13-19, 29'.",
+      "acceptanceCriteria": [
+        "File `/home/deploy/gc-repos/care-tools/GC-SDOH.md` contains 'Reverse scoring:** Questions 11, 13-19, 29 where higher values indicate greater need'"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T-006",
+      "title": "Add reverse-scoring note to P2 zone entry at line 243",
+      "description": "Add a parenthetical note to the P2 zone-based risk assessment line indicating Q29 is reverse-scored, following the same pattern used for P3 (Q11) and P4 (Q13-19).",
+      "acceptanceCriteria": [
+        "File `/home/deploy/gc-repos/care-tools/GC-SDOH.md` contains 'P2: Physical Health** - Average of questions 29-30 (Q29 reverse-scored)'"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T-007",
+      "title": "Verify no stale reverse-scored references remain",
+      "description": "Confirm that the old pattern '11, 13-19' without Q29 no longer appears anywhere in the file, and that all reverse-scoring enumerations now include 29.",
+      "acceptanceCriteria": [
+        "Run `grep -c 'Questions 11, 13-19 are reverse' /home/deploy/gc-repos/care-tools/GC-SDOH.md` — returns 0",
+        "Run `grep -c 'Questions 11, 13-19 where' /home/deploy/gc-repos/care-tools/GC-SDOH.md` — returns 0",
+        "Run `grep -c 'Q29 reverse-scored' /home/deploy/gc-repos/care-tools/GC-SDOH.md` — returns at least 1",
+        "Run `grep -c '11, 13-19, 29' /home/deploy/gc-repos/care-tools/GC-SDOH.md` — returns exactly 2"
+      ],
+      "passes": false
+    }
+  ]
+}

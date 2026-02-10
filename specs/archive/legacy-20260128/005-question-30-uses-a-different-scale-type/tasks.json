@@ -1,0 +1,72 @@
+{
+  "spec": "005-question-30-uses-a-different-scale-type",
+  "tasks": [
+    {
+      "id": "T-001",
+      "title": "Investigate Q30 scale type divergence and all references to scale consistency",
+      "description": "Read GC-SDOH.md to catalog every location that references scale consistency or uniformity (especially line 5's 'consistent 1-5 scale' claim), confirm the exact labels used for Q30 vs all other questions, and identify any downstream documents (ADAPTIVE-ASSESSMENT-PATTERN.md, README.md) that assume a single uniform scale.",
+      "acceptanceCriteria": [
+        "Run `grep -n 'consistent' /home/deploy/gc-repos/care-tools/GC-SDOH.md` — returns at least 1 match confirming the false consistency claim exists",
+        "Run `grep -n 'Very Poor' /home/deploy/gc-repos/care-tools/GC-SDOH.md` — returns exactly 1 match at Q30 (line 224 area)",
+        "Run `grep -c 'Never.*Rarely.*Sometimes.*Often.*Always' /home/deploy/gc-repos/care-tools/GC-SDOH.md` — returns 29 confirming all other questions use the frequency scale"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T-002",
+      "title": "Update header metadata to disclose two scale types",
+      "description": "Edit the GC-SDOH.md header section (around line 5) to replace the false 'consistent 1-5 scale' claim with accurate language that acknowledges two scale types: a frequency scale (Q1-Q29) and a quality rating scale (Q30). This prevents implementers from assuming a single uniform UI.",
+      "acceptanceCriteria": [
+        "File `/home/deploy/gc-repos/care-tools/GC-SDOH.md` no longer contains the exact string 'consistent 1-5 scale'",
+        "File `/home/deploy/gc-repos/care-tools/GC-SDOH.md` contains the string 'frequency' in the header section (first 15 lines)",
+        "File `/home/deploy/gc-repos/care-tools/GC-SDOH.md` contains a reference to Q30 using a different scale type in the header section (first 15 lines)"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T-003",
+      "title": "Add a scale types reference section to GC-SDOH.md",
+      "description": "Add a dedicated section to GC-SDOH.md (before the questions or in the scoring/methodology area) that explicitly defines both scale types: (1) the frequency scale (Never/Rarely/Sometimes/Often/Always) used by Q1-Q29, and (2) the quality rating scale (Very Poor/Poor/Fair/Good/Excellent) used by Q30. Include a note that both map to numeric values 1-5 but carry different semantic meaning.",
+      "acceptanceCriteria": [
+        "Run `grep -c 'Very Poor.*Poor.*Fair.*Good.*Excellent' /home/deploy/gc-repos/care-tools/GC-SDOH.md` — returns at least 2 (Q30 definition plus reference section)",
+        "File `/home/deploy/gc-repos/care-tools/GC-SDOH.md` contains the string 'Scale Types' or 'Response Scales'",
+        "File `/home/deploy/gc-repos/care-tools/GC-SDOH.md` contains the string 'semantic' or 'meaning differs'"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T-004",
+      "title": "Add implementer guidance note at Q30",
+      "description": "Add a brief implementer note near Q30's definition (around line 222-224 in GC-SDOH.md) that explicitly flags the scale type difference and advises that UI rendering must use the quality rating labels instead of the frequency labels for this question.",
+      "acceptanceCriteria": [
+        "Run `grep -A5 'Question 30' /home/deploy/gc-repos/care-tools/GC-SDOH.md | grep -i 'note\\|implementer\\|different\\|quality'` — returns at least 1 match",
+        "File `/home/deploy/gc-repos/care-tools/GC-SDOH.md` contains a note within 10 lines of 'Question 30' that references the different scale type"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T-005",
+      "title": "Update ADAPTIVE-ASSESSMENT-PATTERN.md if it assumes uniform scale",
+      "description": "Review docs/ADAPTIVE-ASSESSMENT-PATTERN.md for any assumption of a single uniform response scale. If found, add a note acknowledging Q30's quality rating scale so that implementers following the adaptive pattern also handle the divergence correctly.",
+      "acceptanceCriteria": [
+        "Run `grep -c 'Q30\\|Question 30\\|quality.*scale\\|Very Poor' /home/deploy/gc-repos/care-tools/docs/ADAPTIVE-ASSESSMENT-PATTERN.md` — returns at least 1 match acknowledging Q30's different scale",
+        "File `/home/deploy/gc-repos/care-tools/docs/ADAPTIVE-ASSESSMENT-PATTERN.md` does not contain any uncorrected assumption of a single uniform response scale without noting the Q30 exception"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T-006",
+      "title": "Verify all changes are internally consistent and no regressions",
+      "description": "Run the project's build and test commands, verify the document still has exactly 30 questions, confirm both scale types are properly documented, and ensure no other content was accidentally removed or corrupted.",
+      "acceptanceCriteria": [
+        "Run `cd /home/deploy/gc-repos/care-tools && echo 'no build configured'` — exits with code 0",
+        "Run `cd /home/deploy/gc-repos/care-tools && echo 'no test configured'` — exits with code 0",
+        "Run `grep -c '\\*\\*Question [0-9]' /home/deploy/gc-repos/care-tools/GC-SDOH.md` — returns exactly 30",
+        "Run `grep -c 'Never.*Rarely.*Sometimes.*Often.*Always' /home/deploy/gc-repos/care-tools/GC-SDOH.md` — returns exactly 29",
+        "Run `grep -c 'Very Poor.*Poor.*Fair.*Good.*Excellent' /home/deploy/gc-repos/care-tools/GC-SDOH.md` — returns at least 2",
+        "File `/home/deploy/gc-repos/care-tools/GC-SDOH.md` no longer contains the exact string 'consistent 1-5 scale'"
+      ],
+      "passes": false
+    }
+  ]
+}
