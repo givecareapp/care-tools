@@ -1,18 +1,40 @@
 {
-  "name": "gc-sdoh-scoring-sdk",
-  "version": "0.1.0",
-  "description": "TypeScript scoring SDK for the GC-SDOH-30 assessment.",
+  "name": "@givecare/tools",
+  "version": "1.0.0",
+  "description": "Open-source assessment tools for caregiving support and social determinants of health",
   "license": "MIT",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "author": "Ali Madad <ali@scty.org>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/givecareapp/care-tools"
+  },
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./instruments": {
+      "import": "./dist/instruments.js",
+      "types": "./dist/instruments.d.ts"
+    },
+    "./scoring": {
+      "import": "./dist/scoring.js",
+      "types": "./dist/scoring.d.ts"
+    }
+  },
   "files": [
-    "dist"
+    "dist",
+    "LICENSE",
+    "README.md"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "test": "npm run build && node --test test/*.test.js"
+    "build": "tsc",
+    "prepublishOnly": "tsc"
   },
   "devDependencies": {
-    "typescript": "^5.3.3"
+    "typescript": "^5.7.0"
   }
 }

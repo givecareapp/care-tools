@@ -2,295 +2,220 @@
 
 ## Overview
 
-The GC-SDOH-30 is a comprehensive 30-question assessment tool designed to identify social determinants of health impacting caregivers and care recipients. This evidence-based screening tool uses a consistent 1-5 scale to help connect individuals with appropriate resources and support services across six priority zones.
+The GC-SDOH-30 is a 30-question assessment tool designed to identify social determinants of health impacting caregivers and care recipients. All questions use a consistent 0-4 deficit-framed scale (higher = greater need) across six priority zones with 5 questions each.
+
+Informed by PRAPARE and AHC-HRSN methodology. Administered selectively per flagged zone via the adaptive pattern, not necessarily as a full 30-question battery.
 
 ## Assessment Time
-Approximately 5-6 minutes
 
-## Priority Zones Assessed
-- **P1: Relationship & Social Support** (8 questions, 26.7%)
-- **P2: Physical Health** (2 questions, 6.7%)
-- **P3: Housing & Environment** (4 questions, 13.3%)
-- **P4: Financial Resources** (8 questions, 26.7%)
-- **P5: Legal & Navigation** (6 questions, 20.0%)
-- **P6: Emotional Wellbeing** (2 questions, 6.7%)
+- **SDOH-6 (Tier 1):** ~2 minutes (1 question per zone)
+- **Deep-Dive (Tier 2):** ~3-4 minutes (flagged zones only)
+- **Full SDOH-30 (Tier 3):** ~5-6 minutes (all 30 questions)
 
----
+## Priority Zones
 
-## Assessment Questions
+| Zone | Label | Questions |
+|------|-------|-----------|
+| P1 | Social Support | 5 (16.7%) |
+| P2 | Physical Health | 5 (16.7%) |
+| P3 | Housing & Environment | 5 (16.7%) |
+| P4 | Financial Resources | 5 (16.7%) |
+| P5 | Legal & Navigation | 5 (16.7%) |
+| P6 | Emotional Wellbeing | 5 (16.7%) |
 
-All questions use a 1-5 scale unless otherwise noted. Questions 11, 13-19 are reverse-scored (higher values indicate greater need), but scoring normalization handles this automatically.
+## Instruments
 
----
+### SDOH-6: Six-Domain Snapshot (Tier 1)
 
-### P1: Relationship & Social Support (8 questions)
+Quick screening with one question per zone. Used as default check-in for returning users.
 
-**Question 1:** I have people I can rely on for emotional support.
+| ID | Domain | Prompt |
+|----|--------|--------|
+| financial | P4 | How much financial strain is caregiving causing? |
+| social | P1 | How often do you feel alone in caregiving? |
+| health | P2 | How much has your own health worsened? |
+| housing | P3 | How unstable does your home situation feel? |
+| navigation | P5 | How hard is it to navigate care systems right now? |
+| burnout | P6 | How overwhelmed do you feel today? |
 
-**Response Scale:** 1 = Never | 2 = Rarely | 3 = Sometimes | 4 = Often | 5 = Always
+**Scale:** 0 = Not at all | 1 = A little | 2 = Somewhat | 3 = Quite a bit | 4 = Extremely
 
----
+### EMA-3: Daily Wellbeing Micro-Check
 
-**Question 2:** I feel connected to my community.
+3-item ecological momentary assessment for daily tracking.
 
-**Response Scale:** 1 = Never | 2 = Rarely | 3 = Sometimes | 4 = Often | 5 = Always
+| ID | Domain | Prompt | Scale |
+|----|--------|--------|-------|
+| stress | stress | How stressed do you feel right now? | 0=none, 4=extreme |
+| mood | mood | How would you rate your mood right now? | 0=very low, 4=great |
+| coping | coping | How well are you coping today? | 0=not at all, 4=very well |
 
----
+**Zone mapping:** stress → P2 (inverted), mood+coping → P6 (direct)
 
-**Question 3:** I have someone to help in an emergency.
+### SDOH-30: Adaptive Deep-Dive (Tier 2/3)
 
-**Response Scale:** 1 = Never | 2 = Rarely | 3 = Sometimes | 4 = Often | 5 = Always
-
----
-
-**Question 4:** I can talk to others about my caregiving challenges.
-
-**Response Scale:** 1 = Never | 2 = Rarely | 3 = Sometimes | 4 = Often | 5 = Always
-
----
-
-**Question 5:** I feel supported by family and friends.
-
-**Response Scale:** 1 = Never | 2 = Rarely | 3 = Sometimes | 4 = Often | 5 = Always
-
----
-
-**Question 6:** I have people who understand what I'm going through.
-
-**Response Scale:** 1 = Never | 2 = Rarely | 3 = Sometimes | 4 = Often | 5 = Always
+All questions are deficit-framed on a 0-4 scale (higher = greater need).
 
 ---
 
-**Question 7:** I can ask for help when I need it.
+#### P1: Social Support
 
-**Response Scale:** 1 = Never | 2 = Rarely | 3 = Sometimes | 4 = Often | 5 = Always
-
----
-
-**Question 8:** I participate in social activities.
-
-**Response Scale:** 1 = Never | 2 = Rarely | 3 = Sometimes | 4 = Often | 5 = Always
+| ID | Prompt |
+|----|--------|
+| P1-1 | How often do you feel you have no one to talk to about caregiving? |
+| P1-2 | How hard is it to find someone to step in when you need a break? |
+| P1-3 | How often do you feel isolated because of your caregiving role? |
+| P1-4 | How difficult is it to ask family or friends for help? |
+| P1-5 | How often do you feel you handle everything alone? |
 
 **Zone Resources:** Support groups, counseling services, respite care, community programs, peer support networks
 
 ---
 
-### P3: Housing & Environment (4 questions)
+#### P2: Physical Health
 
-**Question 9:** My housing is stable and secure.
+| ID | Prompt |
+|----|--------|
+| P2-1 | How much has caregiving worsened your physical health? |
+| P2-2 | How often are you too exhausted to take care of yourself? |
+| P2-3 | How hard is it to get enough sleep because of caregiving? |
+| P2-4 | How often do you skip your own medical appointments? |
+| P2-5 | How much does caregiving interfere with eating well or exercising? |
 
-**Response Scale:** 1 = Never | 2 = Rarely | 3 = Sometimes | 4 = Often | 5 = Always
-
----
-
-**Question 10:** My home is safe and in good condition.
-
-**Response Scale:** 1 = Never | 2 = Rarely | 3 = Sometimes | 4 = Often | 5 = Always
-
----
-
-**Question 11:** I worry about losing my housing. *(Reverse-scored)*
-
-**Response Scale:** 1 = Never | 2 = Rarely | 3 = Sometimes | 4 = Often | 5 = Always
+**Zone Resources:** Respite care services, health screenings, sleep hygiene programs, caregiver wellness programs
 
 ---
 
-**Question 12:** My housing meets my caregiving needs.
+#### P3: Housing & Environment
 
-**Response Scale:** 1 = Never | 2 = Rarely | 3 = Sometimes | 4 = Often | 5 = Always
+| ID | Prompt |
+|----|--------|
+| P3-1 | How unstable does your living situation feel right now? |
+| P3-2 | How hard is it to keep up with home repairs or maintenance? |
+| P3-3 | How often do safety or accessibility issues at home affect caregiving? |
+| P3-4 | How difficult is it to get reliable transportation for care needs? |
+| P3-5 | How much does your neighborhood lack services you need? |
 
-**Zone Resources:** Housing assistance programs, rental assistance, eviction prevention, housing counseling, home modification services
-
----
-
-### P4: Financial Resources (8 questions)
-
-**Question 13:** I worry about having enough money for basic needs. *(Reverse-scored)*
-
-**Response Scale:** 1 = Never | 2 = Rarely | 3 = Sometimes | 4 = Often | 5 = Always
+**Zone Resources:** Housing assistance programs, home modification services, transportation subsidies
 
 ---
 
-**Question 14:** I have difficulty paying for medical care. *(Reverse-scored)*
+#### P4: Financial Resources
 
-**Response Scale:** 1 = Never | 2 = Rarely | 3 = Sometimes | 4 = Often | 5 = Always
+| ID | Prompt |
+|----|--------|
+| P4-1 | How much financial strain is caregiving causing you? |
+| P4-2 | How often do costs prevent you from getting needed care help? |
+| P4-3 | How hard is it to find affordable caregiving support? |
+| P4-4 | How much has caregiving reduced your income or work hours? |
+| P4-5 | How worried are you about long-term financial security? |
 
----
-
-**Question 15:** I have difficulty paying for medications. *(Reverse-scored)*
-
-**Response Scale:** 1 = Never | 2 = Rarely | 3 = Sometimes | 4 = Often | 5 = Always
-
----
-
-**Question 16:** I worry about housing costs. *(Reverse-scored)*
-
-**Response Scale:** 1 = Never | 2 = Rarely | 3 = Sometimes | 4 = Often | 5 = Always
+**Zone Resources:** Financial assistance programs, benefit enrollment, medication assistance, utility assistance
 
 ---
 
-**Question 17:** I have difficulty paying for utilities. *(Reverse-scored)*
+#### P5: Legal & Navigation
 
-**Response Scale:** 1 = Never | 2 = Rarely | 3 = Sometimes | 4 = Often | 5 = Always
+| ID | Prompt |
+|----|--------|
+| P5-1 | How hard is it to understand or navigate care system options? |
+| P5-2 | How often do confusing rules or paperwork slow you down? |
+| P5-3 | How difficult is it to find trustworthy information about benefits? |
+| P5-4 | How hard is it to deal with legal, insurance, or government forms? |
+| P5-5 | How often do you feel lost trying to coordinate between providers? |
 
----
-
-**Question 18:** I have difficulty paying for food. *(Reverse-scored)*
-
-**Response Scale:** 1 = Never | 2 = Rarely | 3 = Sometimes | 4 = Often | 5 = Always
-
----
-
-**Question 19:** Transportation costs are a burden. *(Reverse-scored)*
-
-**Response Scale:** 1 = Never | 2 = Rarely | 3 = Sometimes | 4 = Often | 5 = Always
+**Zone Resources:** Healthcare navigation support, patient advocacy, legal aid, care coordination services
 
 ---
 
-**Question 20:** I can afford internet/phone service.
+#### P6: Emotional Wellbeing
 
-**Response Scale:** 1 = Never | 2 = Rarely | 3 = Sometimes | 4 = Often | 5 = Always
+| ID | Prompt |
+|----|--------|
+| P6-1 | How overwhelmed do you feel by your caregiving responsibilities? |
+| P6-2 | How often do you feel anxious or worried about the future? |
+| P6-3 | How hard is it to find time for things that bring you joy? |
+| P6-4 | How often do you feel guilty about how you handle caregiving? |
+| P6-5 | How much has caregiving affected your sense of who you are? |
 
-**Zone Resources:** Financial assistance programs, medication assistance, insurance enrollment, utility assistance, food banks, SNAP benefits, transportation subsidies
-
----
-
-### P5: Legal & Navigation (6 questions)
-
-**Question 21:** I can easily communicate with healthcare providers.
-
-**Response Scale:** 1 = Never | 2 = Rarely | 3 = Sometimes | 4 = Often | 5 = Always
+**Zone Resources:** Mental health services, emergency planning, stress management, caregiver identity support
 
 ---
 
-**Question 22:** I understand the medical information I receive.
+## Scoring
 
-**Response Scale:** 1 = Never | 2 = Rarely | 3 = Sometimes | 4 = Often | 5 = Always
+### Per-Instrument Scoring
 
----
+All instruments use `scoreInstrument()` which sums raw answers and classifies by ratio:
 
-**Question 23:** I can coordinate care between multiple providers.
+| Risk Band | Score Ratio |
+|-----------|------------|
+| Low | < 25% of max |
+| Moderate | 25-49% of max |
+| High | 50-74% of max |
+| Critical | >= 75% of max |
 
-**Response Scale:** 1 = Never | 2 = Rarely | 3 = Sometimes | 4 = Often | 5 = Always
+### Composite GiveCare Score (0-100, higher = better)
 
----
+Zone scores are computed by normalizing and inverting deficit-framed items (0-4 → 1.0-0.0), then averaging per zone. The composite score is a weighted average:
 
-**Question 24:** I have access to medical records when needed.
+| Zone | Weight |
+|------|--------|
+| P1: Social Support | 20% |
+| P2: Physical Health | 20% |
+| P3: Housing & Environment | 10% |
+| P4: Financial Resources | 20% |
+| P5: Legal & Navigation | 10% |
+| P6: Emotional Wellbeing | 20% |
 
-**Response Scale:** 1 = Never | 2 = Rarely | 3 = Sometimes | 4 = Often | 5 = Always
+### Bands
 
----
+| Band | Score Range | Label |
+|------|-----------|-------|
+| Strong | 75-100 | Standing strong |
+| Steady | 50-74 | Holding steady |
+| Building | 25-49 | Pushing through |
+| Needs Attention | 0-24 | Carrying a lot |
 
-**Question 25:** I have legal documents in order (power of attorney, etc.).
+### Confidence
 
-**Response Scale:** 1 = Never | 2 = Rarely | 3 = Sometimes | 4 = Often | 5 = Always
+| Instruments Completed | Level |
+|----------------------|-------|
+| 0-1 | Early estimate |
+| 2 | Building |
+| 3+ | Solid |
 
----
+### Adaptive Deep-Dive Trigger
 
-**Question 26:** I understand my rights as a caregiver.
+Zones scoring below 40 on the composite scale are flagged for SDOH-30 deep-dive questions.
 
-**Response Scale:** 1 = Never | 2 = Rarely | 3 = Sometimes | 4 = Often | 5 = Always
+## Implementation
 
-**Zone Resources:** Healthcare navigation support, patient advocacy, legal aid, language services, health literacy programs, care coordination services
+See [`docs/ADAPTIVE-ASSESSMENT-PATTERN.md`](./docs/ADAPTIVE-ASSESSMENT-PATTERN.md) for the 3-tiered progressive assessment pattern.
 
----
+### TypeScript SDK
 
-### P6: Emotional Wellbeing (2 questions)
+```bash
+npm install @givecare/tools
+```
 
-**Question 27:** I feel prepared for caregiving emergencies.
+```typescript
+import { scoreInstrument, computeGiveCareScoreFromInstruments } from '@givecare/tools'
 
-**Response Scale:** 1 = Never | 2 = Rarely | 3 = Sometimes | 4 = Often | 5 = Always
+// Score a single instrument
+const result = scoreInstrument('sdoh6', 'v1', {
+  financial: 3, social: 2, health: 1,
+  housing: 0, navigation: 2, burnout: 3,
+})
+// → { score: 11, maxScore: 24, subscores: {...}, riskBand: 'moderate' }
 
----
-
-**Question 28:** I feel safe in my neighborhood.
-
-**Response Scale:** 1 = Never | 2 = Rarely | 3 = Sometimes | 4 = Often | 5 = Always
-
-**Zone Resources:** Emergency preparedness resources, safety planning, neighborhood watch programs, mental health services
-
----
-
-### P2: Physical Health (2 questions)
-
-**Question 29:** How often do you feel physically exhausted from caregiving?
-
-**Response Scale:** 1 = Never | 2 = Rarely | 3 = Sometimes | 4 = Often | 5 = Always
-
----
-
-**Question 30:** How would you rate your sleep quality overall?
-
-**Response Scale:** 1 = Very Poor | 2 = Poor | 3 = Fair | 4 = Good | 5 = Excellent
-
-**Zone Resources:** Respite care services, health screenings, sleep hygiene programs, caregiver wellness programs, stress management services
-
----
-
-## Scoring & Interpretation
-
-### Scoring System
-
-All questions use a 1-5 scale for consistency. The assessment includes:
-- **Regular scoring:** Higher values indicate better outcomes (questions 1-10, 12, 20-28, 30)
-- **Reverse scoring:** Questions 11, 13-19 where higher values indicate greater need
-- **Automatic normalization:** Scoring algorithms handle reverse-scored questions automatically
-
-### Zone-Based Risk Assessment
-
-Each priority zone (P1-P6) receives a normalized score:
-- **P1: Relationship & Social Support** - Average of questions 1-8
-- **P2: Physical Health** - Average of questions 29-30
-- **P3: Housing & Environment** - Average of questions 9-12 (Q11 reverse-scored)
-- **P4: Financial Resources** - Average of questions 13-20 (Q13-19 reverse-scored)
-- **P5: Legal & Navigation** - Average of questions 21-26
-- **P6: Emotional Wellbeing** - Average of questions 27-28
-
-### Risk Thresholds
-
-**Per Zone:**
-- **Low Risk:** Zone score ≥ 3.5 (Generally stable)
-- **Moderate Risk:** Zone score 2.5-3.49 (Some challenges)
-- **High Risk:** Zone score < 2.5 (Significant needs)
-
-**Overall Assessment:**
-- **Low Risk:** All zones in low risk range
-- **Moderate Risk:** 1-2 zones in high risk range
-- **High Risk:** 3+ zones in high risk range or critical individual responses
-
-### Priority Interventions
-
-High-risk zones indicate immediate need for targeted resources:
-- **P1 High:** Connect to support groups, counseling, respite care
-- **P2 High:** Arrange respite services, health screenings, wellness programs
-- **P3 High:** Housing assistance, eviction prevention, home modifications
-- **P4 High:** Financial counseling, assistance programs, benefit enrollment
-- **P5 High:** Care navigation, legal aid, health literacy support
-- **P6 High:** Emergency planning, safety assessment, mental health services
-
-## Implementation Guidelines
-
-### Administration
-- **Format:** Can be self-administered or provider-assisted
-- **Time:** 5-6 minute completion time
-- **Scale:** Consistent 1-5 rating scale across all questions
-- **Languages:** Available in multiple languages
-- **Accessibility:** Large print, audio, digital formats available
-- **Setting:** Private, confidential environment
-
-### Follow-Up
-- Resource referrals within 48 hours for high-risk zones
-- Follow-up assessment at 3, 6, and 12 months
-- Zone-specific intervention tracking
-- Care plan integration with focus on highest-risk zones
-- Monitor progress through zone score improvements
-
-### Privacy & Consent
-- Obtain informed consent before administration
-- Explain purpose and how information will be used
-- Allow question refusal without penalty
-- Secure data storage and transmission
-- HIPAA compliance
+// Compute composite GiveCare Score
+const composite = computeGiveCareScoreFromInstruments([
+  { instrument: 'sdoh6', subscores: result.subscores },
+  { instrument: 'ema3', subscores: { stress: 2, mood: 3, coping: 2 } },
+])
+// → { score: 52, band: 'steady', bandLabel: 'Holding steady', ... }
+```
 
 ## Evidence Base
 
@@ -300,26 +225,31 @@ The GC-SDOH draws from:
 - U.S. Household Food Security Survey Module
 - NAM (National Academy of Medicine) SDOH framework
 - CDC Social Determinants of Health guidelines
-- Caregiver-specific research and assessments
-
-## Validity & Reliability
-
-*[Add psychometric properties as validation studies are completed]*
 
 ## Updates & Versioning
 
-**Current Version:** 2.0 (GC-SDOH-30)
-**Last Updated:** 2025
+**Current Version:** 3.0 (GC-SDOH-30)
+**Last Updated:** 2026
 
 ### Version History
-- **v2.0 (GC-SDOH-30):** Streamlined to 30 questions with consistent 1-5 scale, reorganized into 6 priority zones, added Physical Health zone, reduced completion time to 5-6 minutes
+- **v3.0 (GC-SDOH-30):** Aligned with production. Uniform 5 questions per zone, 0-4 deficit-framed scale, TypeScript SDK with scoring algorithms, added EMA-3 instrument
+- **v2.0 (GC-SDOH-30):** Streamlined to 30 questions with 1-5 scale, 6 priority zones
 - **v1.0 (GC-SDOH-28):** Initial 28-question assessment with 9 domains
 
-## Contact & Support
+## Citation
 
-For questions about implementation, scoring, or resource integration:
-[Contact information]
+Originally created by Ali Madad (@amadad).
+
+```bibtex
+@misc{madad_givecare_tools_2026,
+  author       = {Ali Madad},
+  title        = {{GiveCare Tools}: Open-source frameworks for caregiving support and social determinants of health assessment},
+  note         = {GC-SDOH-30 v3.0},
+  howpublished = {\url{https://github.com/givecareapp/care-tools}},
+  year         = {2026}
+}
+```
 
 ---
 
-**Citation:** GiveCare GC-SDOH-30 Assessment Tool. Version 2.0. 2025. Available at: givecareapp.com
+**License:** MIT. Attribution required — credit "GiveCare Tools" and link to this repository.

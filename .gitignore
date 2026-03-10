@@ -1,10 +1,12 @@
-
 # Ralph Wiggum
 logs/ralph/
 *.tmp
 
 # Night Nurse
 logs/night-nurse.log
+
+# Claude Code
+.claude/
 
 # Node/TypeScript
 node_modules/
