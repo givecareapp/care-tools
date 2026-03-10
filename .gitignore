@@ -5,6 +5,9 @@ logs/ralph/
 # Night Nurse
 logs/night-nurse.log
 
+# Claude Code
+.claude/
+
 # Node/TypeScript
 node_modules/
 dist/
