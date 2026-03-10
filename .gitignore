@@ -1,13 +1,12 @@
-# Ralph Wiggum
-logs/ralph/
-*.tmp
-
-# Night Nurse
-logs/night-nurse.log
-
-# Claude Code
+# Agent artifacts
 .claude/
+.specify/
+.night-nurse/
+logs/
+reports/
+state/
 
 # Node/TypeScript
 node_modules/
 dist/
+*.tmp
