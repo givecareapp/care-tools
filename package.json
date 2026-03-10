@@ -1,0 +1,40 @@
+{
+  "name": "@givecare/tools",
+  "version": "1.0.0",
+  "description": "Open-source assessment tools for caregiving support and social determinants of health",
+  "license": "MIT",
+  "author": "Ali Madad <ali@scty.org>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/givecareapp/care-tools"
+  },
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./instruments": {
+      "import": "./dist/instruments.js",
+      "types": "./dist/instruments.d.ts"
+    },
+    "./scoring": {
+      "import": "./dist/scoring.js",
+      "types": "./dist/scoring.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "tsc"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0"
+  }
+}
