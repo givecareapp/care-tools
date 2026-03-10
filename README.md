@@ -66,12 +66,35 @@ const deepDiveQuestions = getSdoh30QuestionsForZones(flagged)
 
 ```
 src/
-  index.ts          # Re-exports
-  instruments.ts    # SDOH-6, EMA-3, SDOH-30 definitions + scoreInstrument()
-  scoring.ts        # Zone model, composite scoring, trending
+  index.ts                    # Re-exports
+  assessments/instruments.ts  # SDOH-6, EMA-3, SDOH-30 definitions + scoreInstrument()
+  scoring/givecareScore.ts    # Zone model, composite scoring, trending, spike detection
+  benefits/screener.ts        # Schema-agnostic eligibility matching
+  sms/classification.ts       # C-SSRS risk tiers, consent, crisis replies
+  sms/regulatory.ts           # STOP/START/HELP parsing
+  sms/quietHours.ts           # Quiet hours enforcement
+  sms/turnValidator.ts        # Reply quality + assessment scheduling
+  sms/briefing.ts             # Weekly briefing SMS renderer
+  sms/bootstrapSteps.ts       # Onboarding state machine
+  transitions.ts              # Journey phase state machine (15 phases)
+  interventions/tips.ts       # Zone-matched intervention bank
+  geo/timezone.ts             # Area code → timezone inference
+  geo/zipToState.ts           # ZIP → US state lookup
+  lib/time.ts                 # days() helper
 docs/
   ADAPTIVE-ASSESSMENT-PATTERN.md
-GC-SDOH.md          # Complete assessment specification
+GC-SDOH.md                    # Complete assessment specification
+```
+
+## Subpath Exports
+
+```typescript
+import { scoreInstrument } from '@givecare/tools/assessments'
+import { computeGiveCareScore } from '@givecare/tools/scoring'
+import { screenPrograms } from '@givecare/tools/benefits'
+import { assessRisk } from '@givecare/tools/sms'
+import { resolveTransition } from '@givecare/tools/transitions'
+import { zipToState } from '@givecare/tools/geo'
 ```
 
 ## Use Cases

@@ -5,7 +5,7 @@
  * Composes instrument results into a single 0-100 score across six zones.
  */
 
-import type { InstrumentName, ZoneCode } from './instruments'
+import type { InstrumentName, ZoneCode } from '../assessments/instruments'
 
 // ---------------------------------------------------------------------------
 // Zone Model
@@ -333,4 +333,39 @@ export function computeScoreTrend(
     recentDelta >= 5 ? 'improving' : recentDelta <= -5 ? 'declining' : 'stable'
 
   return { delta7d, delta30d, direction }
+}
+
+// ---------------------------------------------------------------------------
+// Spike Detection
+// ---------------------------------------------------------------------------
+
+export interface Spike {
+  magnitude: number
+  direction: 'improvement' | 'decline'
+  severity: 'sharp' | 'notable'
+}
+
+export function detectSpike(
+  current: number,
+  history: Array<{ score: number; computedAt: number }>,
+  now?: number
+): Spike | null {
+  const effectiveNow = now ?? Date.now()
+  const recent = history
+    .filter(h => h.computedAt >= effectiveNow - 7 * MS_PER_DAY)
+    .sort((a, b) => a.computedAt - b.computedAt)
+
+  if (recent.length === 0) return null
+
+  const oldest = recent[0].score
+  const swing = current - oldest
+
+  if (Math.abs(swing) >= 20) {
+    return {
+      magnitude: Math.abs(swing),
+      direction: swing > 0 ? 'improvement' : 'decline',
+      severity: Math.abs(swing) >= 30 ? 'sharp' : 'notable',
+    }
+  }
+  return null
 }

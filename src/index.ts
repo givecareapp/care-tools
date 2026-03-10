@@ -1,43 +1,36 @@
-export {
-  type InstrumentName,
-  type ZoneCode,
-  type AssessmentQuestion,
-  type AssessmentInstrument,
-  type AssessmentScore,
-  type Sdoh30Question,
-  SDOH30_QUESTIONS,
-  SDOH30_ITEM_IDS,
-  getInstrument,
-  listInstruments,
-  scoreInstrument,
-  getSdoh30QuestionsForZones,
-  getSdoh30NextChunk,
-} from './instruments'
+/**
+ * @givecare/tools
+ *
+ * Pure domain logic for caregiving platforms.
+ * Zero infrastructure imports. Zero I/O. Fully testable.
+ */
 
-export {
-  ZONES,
-  ZONE_LABELS,
-  ZONE_WEIGHTS,
-  BAND_LABELS,
-  type Band,
-  type ConfidenceLevel,
-  type ZoneDataPoint,
-  type ZoneScores,
-  type ZoneData,
-  type GiveCareScoreResult,
-  type InstrumentResult,
-  type TrendDirection,
-  type ScoreTrend,
-  toBand,
-  getConfidence,
-  mapEma3ToZones,
-  mapSdoh6ToZones,
-  mapSdoh30ToZones,
-  mapInstrumentToZones,
-  mergeZoneData,
-  computeZoneScores,
-  flaggedZones,
-  computeGiveCareScore,
-  computeGiveCareScoreFromInstruments,
-  computeScoreTrend,
-} from './scoring'
+// Scoring
+export * from './scoring/givecareScore'
+
+// Assessments
+export * from './assessments/instruments'
+
+// Benefits
+export * from './benefits/screener'
+
+// State machine
+export * from './transitions'
+
+// SMS domain
+export * from './sms/classification'
+export * from './sms/regulatory'
+export * from './sms/quietHours'
+export * from './sms/turnValidator'
+export * from './sms/briefing'
+export * from './sms/bootstrapSteps'
+
+// Interventions
+export * from './interventions/tips'
+
+// Geo
+export * from './geo/zipToState'
+export * from './geo/timezone'
+
+// Shared helpers
+export * from './lib/time'

@@ -54,23 +54,11 @@ For each flagged zone, select 3-4 additional questions that:
 
 **Example Deep-Dive Sets:**
 
-**P1 Deep Dive (4 questions):**
-- Questions 2, 4, 6, 8 from original P1 set (if Q1 was used in Quick-6)
+Each zone has 5 questions total. Quick-6 uses 1 per zone, leaving 4 for deep-dive:
 
-**P2 Deep Dive (2 questions):**
-- Both questions (Q29, Q30) if not already in Quick-6
-
-**P3 Deep Dive (3 questions):**
-- Questions covering stability, safety, and adequacy
-
-**P4 Deep Dive (4 questions):**
-- Questions covering healthcare costs, basic needs, utilities, transportation
-
-**P5 Deep Dive (3 questions):**
-- Questions covering communication, coordination, legal preparedness
-
-**P6 Deep Dive (2 questions):**
-- Both questions if not already in Quick-6
+**Per Zone Deep Dive (4 questions each):**
+- Remaining 4 questions from the zone's SDOH-30 pool
+- All zones use uniform 5-question sets (P1-P6)
 
 **Scoring:**
 - Combine Quick-6 and Deep-Dive responses
@@ -141,7 +129,7 @@ START
 **Confidence Scoring:**
 - Track how many questions were answered per zone
 - Store confidence level with each zone score
-- Example: P1 with 1/8 questions = 12.5% confidence
+- Example: P1 with 1/5 questions = 20% confidence
 
 **Score Adjustment:**
 - Quick-6 only: Lower confidence, wider margin of error
@@ -291,7 +279,7 @@ Recommend parallel testing period:
 
 **Zone Score (Quick-6):**
 ```
-score = (answer - 1) / 4 * 100  // Convert 1-5 to 0-100
+score = (1 - answer / 4) * 100  // Convert 0-4 deficit-framed to 0-100 (inverted)
 confidence = 1 / totalQuestionsInZone
 ```
 
@@ -300,7 +288,7 @@ confidence = 1 / totalQuestionsInZone
 quickAnswer = quickScreenResponses[zone]
 deepAnswers = deepDiveResponses[zone]
 allAnswers = [quickAnswer, ...deepAnswers]
-score = mean(allAnswers.map(a => (a - 1) / 4 * 100))
+score = mean(allAnswers.map(a => (1 - a / 4) * 100))
 confidence = allAnswers.length / totalQuestionsInZone
 ```
 
@@ -349,6 +337,7 @@ if (zoneScore > 50 && confidence < 0.5) {
 ## Version History
 
 - **v1.0 (2025-11-23):** Initial adaptive assessment pattern documentation
+- **v1.1 (2026-03-10):** Updated to match v3.0 instrument spec (uniform 5 questions/zone, 0-4 deficit scale)
 
 ---
 

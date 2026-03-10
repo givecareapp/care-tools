@@ -1,7 +1,7 @@
 {
   "name": "@givecare/tools",
-  "version": "1.0.0",
-  "description": "Open-source assessment tools for caregiving support and social determinants of health",
+  "version": "2.0.0",
+  "description": "Open-source caregiving domain logic: SDOH assessments, composite scoring, benefits screening, SMS journey state machine, risk classification, and geo utilities",
   "license": "MIT",
   "author": "Ali Madad <ali@scty.org>",
   "repository": {
@@ -16,13 +16,29 @@
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
-    "./instruments": {
-      "import": "./dist/instruments.js",
-      "types": "./dist/instruments.d.ts"
+    "./assessments": {
+      "import": "./dist/assessments/instruments.js",
+      "types": "./dist/assessments/instruments.d.ts"
     },
     "./scoring": {
-      "import": "./dist/scoring.js",
-      "types": "./dist/scoring.d.ts"
+      "import": "./dist/scoring/givecareScore.js",
+      "types": "./dist/scoring/givecareScore.d.ts"
+    },
+    "./benefits": {
+      "import": "./dist/benefits/screener.js",
+      "types": "./dist/benefits/screener.d.ts"
+    },
+    "./sms": {
+      "import": "./dist/sms/classification.js",
+      "types": "./dist/sms/classification.d.ts"
+    },
+    "./transitions": {
+      "import": "./dist/transitions.js",
+      "types": "./dist/transitions.d.ts"
+    },
+    "./geo": {
+      "import": "./dist/geo/timezone.js",
+      "types": "./dist/geo/timezone.d.ts"
     }
   },
   "files": [
