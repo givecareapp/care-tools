@@ -1,0 +1,76 @@
+{
+  "spec": "006-constitution-is-an-unfilled-template",
+  "tasks": [
+    {
+      "id": "T-001",
+      "title": "Investigate project metadata and documentation for constitution inputs",
+      "description": "Read README.md, GC-SDOH.md, docs/ADAPTIVE-ASSESSMENT-PATTERN.md, and specs/ to extract the project's actual purpose, tech stack, and principles needed to fill the constitution template.",
+      "acceptanceCriteria": [
+        "File `/home/deploy/gc-repos/care-tools/README.md` exists and has been read",
+        "File `/home/deploy/gc-repos/care-tools/GC-SDOH.md` exists and has been read",
+        "File `/home/deploy/gc-repos/care-tools/docs/ADAPTIVE-ASSESSMENT-PATTERN.md` exists and has been read"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T-002",
+      "title": "Fill Project Purpose section in constitution",
+      "description": "Replace the placeholder `[Describe what this project does]` with an accurate description of care-tools as an open-source SDOH assessment and documentation framework for caregiving support.",
+      "acceptanceCriteria": [
+        "File `.specify/memory/constitution.md` no longer contains `[Describe what this project does]`",
+        "File `.specify/memory/constitution.md` contains `SDOH`"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T-003",
+      "title": "Fill Tech Stack section in constitution",
+      "description": "Replace the placeholder `[List main technologies]` with the actual tech stack: Markdown documentation framework, spec-driven development, MIT-licensed, Git-backed with AI agent review workflow.",
+      "acceptanceCriteria": [
+        "File `.specify/memory/constitution.md` no longer contains `[List main technologies]`",
+        "File `.specify/memory/constitution.md` contains `Markdown`"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T-004",
+      "title": "Fill Principles section in constitution",
+      "description": "Replace the three placeholder principles (`[First principle]`, `[Second principle]`, `[Third principle]`) with real principles derived from the project's documentation: evidence-based assessment, privacy-first design, and open-source community-driven development.",
+      "acceptanceCriteria": [
+        "File `.specify/memory/constitution.md` no longer contains `[First principle]`",
+        "File `.specify/memory/constitution.md` no longer contains `[Second principle]`",
+        "File `.specify/memory/constitution.md` no longer contains `[Third principle]`"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T-005",
+      "title": "Update Testing section to match actual build and test commands",
+      "description": "The Testing section currently references `npm run build` and `npm run test` but the project has no package.json or build system. Update to reflect the actual completion signal commands: `echo 'no build configured'` and `echo 'no test configured'`.",
+      "acceptanceCriteria": [
+        "File `.specify/memory/constitution.md` contains `echo`",
+        "Run `grep -c 'npm run build' /home/deploy/gc-repos/care-tools/.specify/memory/constitution.md` — returns 0"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T-006",
+      "title": "Verify no bracket placeholders remain in constitution",
+      "description": "Confirm that the constitution file contains zero unfilled bracket placeholders of the form `[...]` that indicate template fields.",
+      "acceptanceCriteria": [
+        "Run `grep -cE '\\[Describe |\\[List |\\[First |\\[Second |\\[Third ' /home/deploy/gc-repos/care-tools/.specify/memory/constitution.md` — returns 0"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T-007",
+      "title": "Verify completion signal exits cleanly",
+      "description": "Run the project's build and test completion signals to confirm no regressions.",
+      "acceptanceCriteria": [
+        "Run `cd /home/deploy/gc-repos/care-tools && echo 'no build configured'` — exits with code 0",
+        "Run `cd /home/deploy/gc-repos/care-tools && echo 'no test configured'` — exits with code 0"
+      ],
+      "passes": false
+    }
+  ]
+}

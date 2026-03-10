@@ -1,0 +1,86 @@
+{
+  "spec": "001-zone-ordering-is-inconsistent-in-gc-sdoh-md",
+  "tasks": [
+    {
+      "id": "T-001",
+      "title": "Investigate current zone and question ordering in GC-SDOH.md",
+      "description": "Map the current zone presentation order, question numbering, and all cross-references to question numbers in GC-SDOH.md and docs/ADAPTIVE-ASSESSMENT-PATTERN.md. Confirm the P2 section (Physical Health) appears after P6 at line 214 rather than after P1.",
+      "acceptanceCriteria": [
+        "File `GC-SDOH.md` contains `### P3: Housing` appearing before `### P2: Physical Health` — confirming the out-of-order issue exists"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T-002",
+      "title": "Move P2 section to appear after P1 in GC-SDOH.md",
+      "description": "Relocate the P2: Physical Health section (currently at line 214, containing Q29-30) to appear immediately after the P1 section (after line 76) and before the current P3 section. This restores P1-P2-P3-P4-P5-P6 zone order in the document body.",
+      "acceptanceCriteria": [
+        "File `GC-SDOH.md` contains `### P1:` followed later by `### P2:` followed later by `### P3:` followed later by `### P4:` followed later by `### P5:` followed later by `### P6:` — all in sequential order",
+        "File `GC-SDOH.md` no longer contains `### P2: Physical Health` appearing after `### P6:`"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T-003",
+      "title": "Renumber questions sequentially by zone order",
+      "description": "Renumber all 30 questions so they follow the corrected zone order: P1 gets Q1-8 (unchanged), P2 gets Q9-10 (was Q29-30), P3 gets Q11-14 (was Q9-12), P4 gets Q15-22 (was Q13-20), P5 gets Q23-28 (was Q21-26), P6 gets Q29-30 (was Q27-28). Update every `**Question N:**` line in the assessment section.",
+      "acceptanceCriteria": [
+        "Run `grep -c '\\*\\*Question [0-9]' GC-SDOH.md` — returns exactly 30",
+        "File `GC-SDOH.md` contains `**Question 9:**` inside the P2: Physical Health section",
+        "File `GC-SDOH.md` contains `**Question 10:**` inside the P2: Physical Health section",
+        "File `GC-SDOH.md` contains `**Question 11:**` inside the P3: Housing & Environment section",
+        "File `GC-SDOH.md` contains `**Question 30:**` inside the P6: Emotional Wellbeing section"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T-004",
+      "title": "Update reverse-scoring references with new question numbers",
+      "description": "Update the reverse-scored question list at the top of the Assessment Questions section (line 22) and the Scoring System section (line 234-237) to reflect the new question numbers. Old reverse-scored Q11,Q13-19 map to new numbers based on the renumbering scheme.",
+      "acceptanceCriteria": [
+        "File `GC-SDOH.md` contains `Questions 13, 15-21 are reverse-scored` or equivalent updated reference in the assessment preamble",
+        "File `GC-SDOH.md` contains updated regular scoring list that excludes the new reverse-scored question numbers",
+        "File `GC-SDOH.md` no longer contains `Questions 11, 13-19 are reverse-scored`"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T-005",
+      "title": "Update Zone-Based Risk Assessment question ranges",
+      "description": "Update the zone-to-question mapping in the Scoring & Interpretation section (around line 241-247) to reflect the new question numbers: P1=Q1-8, P2=Q9-10, P3=Q11-14, P4=Q15-22, P5=Q23-28, P6=Q29-30.",
+      "acceptanceCriteria": [
+        "File `GC-SDOH.md` contains `P1: Relationship & Social Support** - Average of questions 1-8`",
+        "File `GC-SDOH.md` contains `P2: Physical Health** - Average of questions 9-10`",
+        "File `GC-SDOH.md` contains `P3: Housing & Environment** - Average of questions 11-14`",
+        "File `GC-SDOH.md` contains `P4: Financial Resources** - Average of questions 15-22`",
+        "File `GC-SDOH.md` contains `P5: Legal & Navigation** - Average of questions 23-28`",
+        "File `GC-SDOH.md` contains `P6: Emotional Wellbeing** - Average of questions 29-30`",
+        "File `GC-SDOH.md` no longer contains `Average of questions 29-30` in the P2 line (it should now say `9-10`)"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T-006",
+      "title": "Update ADAPTIVE-ASSESSMENT-PATTERN.md question references",
+      "description": "Update docs/ADAPTIVE-ASSESSMENT-PATTERN.md to reflect the renumbered questions. The P2 reference to Q29,Q30 should become Q9,Q10. The P1 reference to Q2,Q4,Q6,Q8 is unchanged.",
+      "acceptanceCriteria": [
+        "File `docs/ADAPTIVE-ASSESSMENT-PATTERN.md` contains `Q9, Q10` (or `Q9` and `Q10`) instead of `Q29, Q30`",
+        "File `docs/ADAPTIVE-ASSESSMENT-PATTERN.md` no longer contains `Q29` or `Q30`"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T-007",
+      "title": "Verify complete document consistency",
+      "description": "Verify that all zone headers appear in P1-P6 sequential order, all 30 questions are present and sequentially numbered, all cross-references use updated question numbers, and the build/test commands pass.",
+      "acceptanceCriteria": [
+        "Run `grep -n '### P[0-9]:' GC-SDOH.md` — zones appear in order P1, P2, P3, P4, P5, P6 with P1 having the lowest line number and P6 having the highest",
+        "Run `grep -c '\\*\\*Question' GC-SDOH.md` — returns exactly 30",
+        "File `GC-SDOH.md` no longer contains `questions 29-30` in the Zone-Based Risk Assessment section",
+        "Run `cd /home/deploy/gc-repos/care-tools && echo 'no build configured'` — exits with code 0",
+        "Run `cd /home/deploy/gc-repos/care-tools && echo 'no test configured'` — exits with code 0"
+      ],
+      "passes": false
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "spec": "007-contributing-md-referenced-but-missing",
+  "tasks": [
+    {
+      "id": "T-001",
+      "title": "Investigate README references to CONTRIBUTING.md",
+      "description": "Read README.md and catalog every reference to CONTRIBUTING.md, noting line numbers and the context of each reference (badge link, prose link, listed topics). This establishes the contract the new file must satisfy.",
+      "acceptanceCriteria": [
+        "Run `grep -n 'CONTRIBUTING' /home/deploy/gc-repos/care-tools/README.md` — exits with code 0 and returns lines 6 and 126"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T-002",
+      "title": "Confirm CONTRIBUTING.md does not exist",
+      "description": "Verify the file is truly missing at the project root so we know creation (not editing) is required.",
+      "acceptanceCriteria": [
+        "Run `test ! -f /home/deploy/gc-repos/care-tools/CONTRIBUTING.md` — exits with code 0"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T-003",
+      "title": "Create CONTRIBUTING.md with required sections",
+      "description": "Create CONTRIBUTING.md at the project root covering all five topics promised in README.md line 126-131: code contributions, documentation improvements, issue reporting, feature requests, and community standards. The file must also be consistent with the MIT license and the project's healthcare/caregiving domain.",
+      "acceptanceCriteria": [
+        "File `/home/deploy/gc-repos/care-tools/CONTRIBUTING.md` exists — `test -f /home/deploy/gc-repos/care-tools/CONTRIBUTING.md` exits with code 0",
+        "File `/home/deploy/gc-repos/care-tools/CONTRIBUTING.md` contains `Code contributions` (case-insensitive) — `grep -qi 'code contributions' /home/deploy/gc-repos/care-tools/CONTRIBUTING.md` exits with code 0",
+        "File `/home/deploy/gc-repos/care-tools/CONTRIBUTING.md` contains `Documentation improvements` (case-insensitive) — `grep -qi 'documentation improvements' /home/deploy/gc-repos/care-tools/CONTRIBUTING.md` exits with code 0",
+        "File `/home/deploy/gc-repos/care-tools/CONTRIBUTING.md` contains `Issue reporting` (case-insensitive) — `grep -qi 'issue reporting' /home/deploy/gc-repos/care-tools/CONTRIBUTING.md` exits with code 0",
+        "File `/home/deploy/gc-repos/care-tools/CONTRIBUTING.md` contains `Feature requests` (case-insensitive) — `grep -qi 'feature requests' /home/deploy/gc-repos/care-tools/CONTRIBUTING.md` exits with code 0",
+        "File `/home/deploy/gc-repos/care-tools/CONTRIBUTING.md` contains `Community standards` (case-insensitive) — `grep -qi 'community standards' /home/deploy/gc-repos/care-tools/CONTRIBUTING.md` exits with code 0"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T-004",
+      "title": "Include contributor types from README in CONTRIBUTING.md",
+      "description": "Ensure the CONTRIBUTING.md acknowledges the five contributor roles listed in README.md lines 114-120: developers, healthcare professionals, researchers, social workers, and caregivers.",
+      "acceptanceCriteria": [
+        "File `/home/deploy/gc-repos/care-tools/CONTRIBUTING.md` contains `Developer` (case-insensitive) — `grep -qi 'developer' /home/deploy/gc-repos/care-tools/CONTRIBUTING.md` exits with code 0",
+        "File `/home/deploy/gc-repos/care-tools/CONTRIBUTING.md` contains `Healthcare` (case-insensitive) — `grep -qi 'healthcare' /home/deploy/gc-repos/care-tools/CONTRIBUTING.md` exits with code 0",
+        "File `/home/deploy/gc-repos/care-tools/CONTRIBUTING.md` contains `Researcher` (case-insensitive) — `grep -qi 'researcher' /home/deploy/gc-repos/care-tools/CONTRIBUTING.md` exits with code 0",
+        "File `/home/deploy/gc-repos/care-tools/CONTRIBUTING.md` contains `Social Worker` (case-insensitive) — `grep -qi 'social worker' /home/deploy/gc-repos/care-tools/CONTRIBUTING.md` exits with code 0",
+        "File `/home/deploy/gc-repos/care-tools/CONTRIBUTING.md` contains `Caregiver` (case-insensitive) — `grep -qi 'caregiver' /home/deploy/gc-repos/care-tools/CONTRIBUTING.md` exits with code 0"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T-005",
+      "title": "Reference MIT license in CONTRIBUTING.md",
+      "description": "The CONTRIBUTING.md must reference the MIT license so contributors understand the licensing terms of their submissions, consistent with the project's LICENSE file.",
+      "acceptanceCriteria": [
+        "File `/home/deploy/gc-repos/care-tools/CONTRIBUTING.md` contains `MIT` — `grep -q 'MIT' /home/deploy/gc-repos/care-tools/CONTRIBUTING.md` exits with code 0"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T-006",
+      "title": "Verify README badge link resolves to CONTRIBUTING.md",
+      "description": "Confirm that the badge on README.md line 6 links to a relative path that now resolves to the new file, ensuring the broken link is fixed.",
+      "acceptanceCriteria": [
+        "Run `grep -q '\\](CONTRIBUTING.md)' /home/deploy/gc-repos/care-tools/README.md` — exits with code 0 (link format unchanged)",
+        "Run `test -f /home/deploy/gc-repos/care-tools/CONTRIBUTING.md` — exits with code 0 (target exists)"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T-007",
+      "title": "Run project build and test commands",
+      "description": "Execute the project's build and test commands to confirm no regressions were introduced by adding the new file.",
+      "acceptanceCriteria": [
+        "Run `cd /home/deploy/gc-repos/care-tools && echo 'no build configured'` — exits with code 0",
+        "Run `cd /home/deploy/gc-repos/care-tools && echo 'no test configured'` — exits with code 0"
+      ],
+      "passes": false
+    }
+  ]
+}

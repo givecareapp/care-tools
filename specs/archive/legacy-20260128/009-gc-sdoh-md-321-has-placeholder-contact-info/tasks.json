@@ -1,0 +1,46 @@
+{
+  "spec": "009-gc-sdoh-md-321-has-placeholder-contact-info",
+  "tasks": [
+    {
+      "id": "T-001",
+      "title": "Investigate placeholder and existing contact patterns",
+      "description": "Read GC-SDOH.md around line 321 and the README.md contact/support section to confirm the placeholder text and identify the established contact information patterns used elsewhere in the project.",
+      "acceptanceCriteria": [
+        "File `/home/deploy/gc-repos/care-tools/GC-SDOH.md` contains `[Contact information]` at line 321",
+        "File `/home/deploy/gc-repos/care-tools/README.md` contains `givecareapp.com` in the Community & Support section"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T-002",
+      "title": "Replace placeholder with real contact information",
+      "description": "Replace the `[Contact information]` placeholder at line 321 of GC-SDOH.md with actual contact details consistent with the project's existing patterns: the website (givecareapp.com), GitHub Issues for the care-tools repo, and GitHub Discussions.",
+      "acceptanceCriteria": [
+        "File `/home/deploy/gc-repos/care-tools/GC-SDOH.md` no longer contains `[Contact information]`",
+        "File `/home/deploy/gc-repos/care-tools/GC-SDOH.md` contains `givecareapp.com`",
+        "File `/home/deploy/gc-repos/care-tools/GC-SDOH.md` contains `github.com/givecareapp/care-tools`"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T-003",
+      "title": "Verify no remaining placeholder brackets in contact section",
+      "description": "Confirm that the Contact & Support section of GC-SDOH.md has no remaining bracket placeholders and reads as publication-ready text.",
+      "acceptanceCriteria": [
+        "Run `grep -n '\\[Contact information\\]' /home/deploy/gc-repos/care-tools/GC-SDOH.md` — returns no matches (exit code 1)",
+        "Run `grep -c '\\[.*\\]' /home/deploy/gc-repos/care-tools/GC-SDOH.md` — the Contact & Support section (lines 318-322) contains no bracket-enclosed placeholders"
+      ],
+      "passes": false
+    },
+    {
+      "id": "T-004",
+      "title": "Run project build and test commands",
+      "description": "Execute the project's build and test commands to confirm no regressions were introduced by the change.",
+      "acceptanceCriteria": [
+        "Run `cd /home/deploy/gc-repos/care-tools && echo 'no build configured'` — exits with code 0",
+        "Run `cd /home/deploy/gc-repos/care-tools && echo 'no test configured'` — exits with code 0"
+      ],
+      "passes": false
+    }
+  ]
+}
