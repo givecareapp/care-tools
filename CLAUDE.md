@@ -1,5 +1,7 @@
 # GiveCare Tools
 
+> Ecosystem context: see `~/agents/wiki/givecare-system.md` — this repo is in the **open-source credibility** domain.
+
 Open-source caregiver SDOH assessment and scoring toolkit. Pure functions, zero I/O.
 
 ## Scope
