@@ -25,7 +25,9 @@ export function nextAllowedSendAt(args: {
   let cursor = args.now
   for (let i = 0; i < 96; i += 1) {
     const hour = localHour(cursor, args.timezone)
-    if (!isHourInQuietWindow(hour, start, end)) return cursor
+    if (!isHourInQuietWindow(hour, start, end)) {
+      return cursor
+    }
     cursor += 30 * 60 * 1000
   }
   return args.now + 8 * 60 * 60 * 1000
@@ -42,6 +44,8 @@ function localHour(timestamp: number, timezone: string): number {
 
 function isHourInQuietWindow(hour: number, startHour: number, endHour: number): boolean {
   if (startHour === endHour) return false
-  if (startHour < endHour) return hour >= startHour && hour < endHour
+  if (startHour < endHour) {
+    return hour >= startHour && hour < endHour
+  }
   return hour >= startHour || hour < endHour
 }

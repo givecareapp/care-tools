@@ -1,6 +1,11 @@
 export type RegulatoryCommand = 'STOP' | 'START' | 'UNSTOP' | 'HELP'
 
+export function isShareKeyword(text: string): boolean {
+  return text.trim().toLowerCase() === 'share'
+}
+
 const STOP_KEYWORDS = new Set(['STOP', 'STOPALL', 'UNSUBSCRIBE', 'PAUSE', 'CANCEL', 'END', 'QUIT'])
+
 const START_KEYWORDS = new Set(['START', 'UNSTOP', 'RESUME'])
 const HELP_KEYWORDS = new Set(['HELP', 'INFO'])
 

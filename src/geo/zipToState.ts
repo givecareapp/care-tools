@@ -5,6 +5,7 @@
 
 type Range = [min: number, max: number, state: string]
 
+// USPS 3-digit prefix -> state mapping (sorted by min)
 const ZIP_RANGES: Range[] = [
   [6, 9, 'PR'],
   [10, 27, 'MA'],

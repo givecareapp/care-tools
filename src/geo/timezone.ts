@@ -234,6 +234,7 @@ const CONFIRM_PATTERN =
   /^\s*(yes|yep|yeah|y|ok|okay|sure|correct|right|that's right|that works|sounds right)\b/i
 
 export function inferTimezoneFromAreaCode(phoneE164: string): string {
+  // E.164 US: +1XXXYYYZZZZ -- area code is digits 2-4
   if (phoneE164.startsWith('+1') && phoneE164.length >= 5) {
     const areaCode = phoneE164.slice(2, 5)
     return AREA_CODE_TZ[areaCode] ?? 'America/New_York'

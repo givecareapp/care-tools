@@ -1,13 +1,26 @@
+<!-- Diátaxis: reference -->
+
 # GiveCare Tools
 
-> Open-source assessment tools and scoring SDK for caregiving support and social determinants of health
+> Open-source caregiver social-determinants assessment and scoring toolkit
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 ## Overview
 
-GiveCare Tools provides assessment instruments, scoring algorithms, and a TypeScript SDK for organizations building caregiving support systems. Used in production by [givecareapp.com](https://givecareapp.com).
+GiveCare Tools provides a small, public-safe TypeScript SDK for caregiver SDOH screening and zone-based scoring. It is intentionally narrower than GiveCare's internal production `care-domain` package: no Mira runtime, no benefits catalog, no filing workflow, and no proprietary turn-planning logic.
+
+## Public surface
+
+| Area | Included | Why |
+|------|----------|-----|
+| **Caregiver SDOH** | SDOH-6, EMA-3, SDOH-30, adaptive deep dive | Main open-source contribution |
+| **Scoring** | Six-zone model, composite score, bands, trend/spike helpers | Helps teams operationalize caregiver pressure signals |
+| **Basic SMS utilities** | STOP/START/HELP parsing, quiet-hours helpers | Safe interoperability primitives |
+| **Geo helpers** | ZIP → state, phone area code → timezone | Useful for state/resource routing |
+
+Not included: production benefits data, eligibility filing flows, Mira prompt/runtime, memory, identity, resource orchestration, crisis operations, or clinical decision support.
 
 ## Instruments
 
@@ -40,79 +53,83 @@ import {
 
 // Score an SDOH-6
 const sdoh6 = scoreInstrument('sdoh6', 'v1', {
-  financial: 3, social: 2, health: 1,
-  housing: 0, navigation: 2, burnout: 3,
+  financial: 3,
+  social: 2,
+  health: 1,
+  housing: 0,
+  navigation: 2,
+  burnout: 3,
 })
-// → { score: 11, maxScore: 24, subscores: {...}, riskBand: 'moderate' }
 
 // Compute composite GiveCare Score (0-100)
 const composite = computeGiveCareScoreFromInstruments([
   { instrument: 'sdoh6', subscores: sdoh6.subscores },
   { instrument: 'ema3', subscores: { stress: 2, mood: 3, coping: 2 } },
 ])
-// → { score: 52, band: 'steady', bandLabel: 'Holding steady', zones: {...} }
 
 // Adaptive deep-dive: find flagged zones and get targeted questions
 const flagged = flaggedZones(composite.zones) // e.g. ['P4', 'P6']
 const deepDiveQuestions = getSdoh30QuestionsForZones(flagged)
 ```
 
-## Documentation
-
-- [GC-SDOH.md](./GC-SDOH.md) — Full assessment questions, scoring, and guidelines
-- [Adaptive Assessment Pattern](./docs/ADAPTIVE-ASSESSMENT-PATTERN.md) — 3-tiered progressive assessment
-
-## Project Structure
-
-```
-src/
-  index.ts                    # Re-exports
-  assessments/instruments.ts  # SDOH-6, EMA-3, SDOH-30 definitions + scoreInstrument()
-  scoring/givecareScore.ts    # Zone model, composite scoring, trending, spike detection
-  benefits/screener.ts        # Schema-agnostic eligibility matching
-  sms/classification.ts       # C-SSRS risk tiers, consent, crisis replies
-  sms/regulatory.ts           # STOP/START/HELP parsing
-  sms/quietHours.ts           # Quiet hours enforcement
-  sms/turnValidator.ts        # Reply quality + assessment scheduling
-  sms/briefing.ts             # Weekly briefing SMS renderer
-  sms/bootstrapSteps.ts       # Onboarding state machine
-  transitions.ts              # Journey phase state machine (15 phases)
-  interventions/tips.ts       # Zone-matched intervention bank
-  geo/timezone.ts             # Area code → timezone inference
-  geo/zipToState.ts           # ZIP → US state lookup
-  lib/time.ts                 # days() helper
-docs/
-  ADAPTIVE-ASSESSMENT-PATTERN.md
-GC-SDOH.md                    # Complete assessment specification
-```
-
-## Subpath Exports
+## Subpath exports
 
 ```typescript
 import { scoreInstrument } from '@givecare/tools/assessments'
 import { computeGiveCareScore } from '@givecare/tools/scoring'
-import { screenPrograms } from '@givecare/tools/benefits'
-import { assessRisk } from '@givecare/tools/sms'
-import { resolveTransition } from '@givecare/tools/transitions'
-import { zipToState } from '@givecare/tools/geo'
+import { parseRegulatoryKeyword } from '@givecare/tools/sms'
+import { zipToState } from '@givecare/tools/geo/zip-to-state'
 ```
 
-## Use Cases
+## Project structure
 
-- **Healthcare Organizations** — Integrate SDOH screening into care coordination
-- **Non-Profits** — Identify client needs and connect to resources
-- **Research** — Study social determinants in caregiving populations
-- **Technology Platforms** — Build caregiving support applications
+```text
+src/
+  index.ts                    # Public barrel
+  assessments/instruments.ts  # SDOH-6, EMA-3, SDOH-30 definitions + scoreInstrument()
+  scoring/givecareScore.ts    # Zone model, composite scoring, trending, spike detection
+  sms/regulatory.ts           # STOP/START/HELP parsing
+  sms/quietHours.ts           # Quiet hours enforcement
+  geo/timezone.ts             # Area code → timezone inference
+  geo/zipToState.ts           # ZIP → US state lookup
+  lib/time.ts                 # days() helper
+scripts/
+  sync-care-domain.mjs        # Copies public-safe helper files from internal care-domain
+```
 
-## Evidence Base
+## Care-domain sync policy
+
+GiveCare's internal `gc-sms/packages/care-domain` package is the production source for shared domain logic. This public repo only syncs files that are safe and intentionally open:
+
+- `geo/timezone.ts`
+- `geo/zipToState.ts`
+- `lib/time.ts`
+- `sms/quietHours.ts`
+- `sms/regulatory.ts`
+
+Run from a workspace that has sibling `../gc-sms`:
+
+```bash
+npm run sync:care-domain
+npm test
+```
+
+If `../gc-sms` is absent, the drift check skips so the public repo remains usable standalone.
+
+## Use cases
+
+- **Healthcare organizations** — add caregiver SDOH screening to care coordination
+- **Non-profits** — identify caregiver pressure zones and route support
+- **Research** — study caregiver-specific social determinants patterns
+- **Technology platforms** — build caregiver support workflows without adopting GiveCare infra
+
+## Evidence base
 
 - **PRAPARE** — Protocol for Responding to and Assessing Patients' Assets, Risks, and Experiences
 - **AHC Screening Tool** — Accountable Health Communities Health-Related Social Needs Screening
 - **NAM Framework** — National Academy of Medicine Social Determinants of Health recommendations
 
-## Contributing
-
-Contributions welcome from developers, healthcare professionals, researchers, social workers, and caregivers. Please open an issue or PR.
+This toolkit is not a medical device, diagnostic instrument, crisis service, or eligibility determination engine.
 
 ## Citation
 

@@ -1,10 +1,10 @@
 # Codemap
 
-Generated: 2026-03-10
+Generated: 2026-04-30
 
 ## Architecture
 
-Pure TypeScript domain logic for caregiving platforms. Zero runtime dependencies, zero I/O, zero framework imports. Mirrors the internal `care-domain` package from the GiveCare monorepo, minus the proprietary Mira system prompt.
+Pure TypeScript caregiver SDOH assessment and scoring toolkit. Zero runtime dependencies, zero I/O, zero framework imports. This repo is a public-safe subset of GiveCare domain logic, not a mirror of the production `care-domain` package.
 
 ## Directory Structure
 
@@ -12,62 +12,56 @@ Pure TypeScript domain logic for caregiving platforms. Zero runtime dependencies
 |------|---------|-------------|
 | src/assessments/ | Instrument definitions + scoring | `scoreInstrument()`, `getInstrument()`, `getSdoh30QuestionsForZones()` |
 | src/scoring/ | Composite GiveCare Score (0-100) | `computeGiveCareScore()`, `computeGiveCareScoreFromInstruments()`, `detectSpike()` |
-| src/benefits/ | Eligibility matching engine | `screenPrograms()`, `suggestNextQuestion()` |
-| src/sms/ | SMS domain logic (6 modules) | `assessRisk()`, `composeSmsReply()`, `validateTurnOutcome()`, `renderBriefing()` |
-| src/interventions/ | Zone-matched tips | `getInterventionForZone()`, `ZONE_INTERVENTIONS` |
+| src/sms/ | Public SMS interoperability helpers | `parseRegulatoryKeyword()`, `adjustForQuietHours()` |
 | src/geo/ | Geographic utilities | `inferTimezoneFromAreaCode()`, `zipToState()` |
 | src/lib/ | Shared helpers | `days()` |
-| src/ | State machine + barrel | `resolveTransition()`, re-exports |
+| scripts/ | Maintenance scripts | `sync-care-domain.mjs` |
 
 ## Entry Points
 
 | Entry | File | Description |
 |-------|------|-------------|
-| Main | src/index.ts | Star re-exports from all modules |
+| Main | src/index.ts | Public barrel |
 | Assessments | src/assessments/instruments.ts | Subpath `@givecare/tools/assessments` |
 | Scoring | src/scoring/givecareScore.ts | Subpath `@givecare/tools/scoring` |
-| Benefits | src/benefits/screener.ts | Subpath `@givecare/tools/benefits` |
-| SMS | src/sms/classification.ts | Subpath `@givecare/tools/sms` |
-| Transitions | src/transitions.ts | Subpath `@givecare/tools/transitions` |
-| Geo | src/geo/timezone.ts | Subpath `@givecare/tools/geo` |
+| SMS utilities | src/sms/index.ts | Subpath `@givecare/tools/sms` |
+| Regulatory SMS | src/sms/regulatory.ts | Subpath `@givecare/tools/sms/regulatory` |
+| Quiet hours | src/sms/quietHours.ts | Subpath `@givecare/tools/sms/quiet-hours` |
+| Geo timezone | src/geo/timezone.ts | Subpath `@givecare/tools/geo/timezone` |
+| ZIP state | src/geo/zipToState.ts | Subpath `@givecare/tools/geo/zip-to-state` |
 
 ## Data Flow
 
-```
+```text
 Instrument responses (0-4 deficit scale)
-  → scoreInstrument() → subscores per domain
-  → mapInstrumentToZones() → normalized 0-1 zone data points
-  → mergeZoneData() → combined multi-instrument data
-  → computeZoneScores() → zone scores 0-100
-  → computeGiveCareScore() → composite score + band + pressures/supports
-  → flaggedZones() → zones needing SDOH-30 deep-dive
+  -> scoreInstrument() -> subscores per domain
+  -> mapInstrumentToZones() -> normalized 0-1 zone data points
+  -> mergeZoneData() -> combined multi-instrument data
+  -> computeZoneScores() -> zone scores 0-100
+  -> computeGiveCareScore() -> composite score + band + pressures/supports
+  -> flaggedZones() -> zones needing SDOH-30 deep-dive
 ```
 
 ## Key Patterns
 
-- **Zone Model**: Six priority zones P1-P6, weighted 0.1-0.2, scored 0-100
-- **Deficit Framing**: Higher raw value = worse outcome, inverted during normalization
-- **Instrument Routing**: `mapInstrumentToZones()` dispatches by instrument name to zone mappings
-- **State Machine**: 15 journey phases with signal-based transitions, preemptive safety signals
-- **Risk Classification**: C-SSRS-aligned tiers (critical/high/medium/low) with `cssrsTier`
-- **Schema-agnostic Screening**: Benefits `screenPrograms()` matches `CaregiverFacts` against `EligibilityCriteria[]`
-
-## SMS Module Breakdown
-
-| File | Responsibility |
-|------|---------------|
-| classification.ts | Risk assessment, consent detection, crisis replies |
-| regulatory.ts | STOP/START/HELP/UNSTOP keyword parsing |
-| quietHours.ts | Time-based send suppression |
-| turnValidator.ts | Reply quality scoring, assessment scheduling |
-| briefing.ts | Weekly update SMS rendering |
-| bootstrapSteps.ts | Onboarding flow (name, situation, timezone, zip) |
+- **Zone Model**: Six priority zones P1-P6, weighted 0.1-0.2, scored 0-100.
+- **Deficit Framing**: Higher raw value = worse outcome, inverted during normalization.
+- **Instrument Routing**: `mapInstrumentToZones()` dispatches by instrument name to zone mappings.
+- **Adaptive Assessment**: SDOH-6/EMA-3 identify flagged zones; SDOH-30 deepens only flagged zones.
+- **Public-Safe Sync**: `scripts/sync-care-domain.mjs` copies only basic helpers from internal care-domain.
 
 ## Common Tasks
 
 | Task | Steps |
 |------|-------|
-| Add new instrument | 1. Define in `assessments/instruments.ts` 2. Add zone mapping in `scoring/givecareScore.ts` 3. Add to `mapInstrumentToZones()` switch |
-| Add new zone | 1. Add to `ZoneCode` type + `ZONES` array 2. Add weight in `ZONE_WEIGHTS` 3. Add label in `ZONE_LABELS` 4. Add intervention in `interventions/tips.ts` |
-| Add benefit program | Create `EligibilityCriteria` object, pass to `screenPrograms()` |
-| Add journey phase | 1. Add to `JOURNEY_PHASES` 2. Add transition rules in `TRANSITIONS` |
+| Sync helper drift | Run `npm run sync:care-domain` from a workspace with sibling `../gc-sms` |
+| Add new public instrument | 1. Define in `assessments/instruments.ts` 2. Add zone mapping in `scoring/givecareScore.ts` 3. Add to `mapInstrumentToZones()` switch |
+| Add new zone | 1. Add to `ZoneCode` + `ZONES` 2. Add weight/label 3. Update instrument mappings and docs |
+| Check package | Run `npm test && npm run build` |
+
+## Explicit Non-Goals
+
+- No benefits catalog or eligibility engine.
+- No journey state machine.
+- No Mira runtime, memory, identity, prompts, or turn planning.
+- No crisis classifier or clinical decision support.

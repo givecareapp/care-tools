@@ -1,7 +1,7 @@
 {
   "name": "@givecare/tools",
-  "version": "2.0.0",
-  "description": "Open-source caregiving domain logic: SDOH assessments, composite scoring, benefits screening, SMS journey state machine, risk classification, and geo utilities",
+  "version": "3.0.0",
+  "description": "Open-source caregiver SDOH assessment and scoring toolkit",
   "license": "MIT",
   "author": "Ali Madad <ali@scty.org>",
   "repository": {
@@ -24,32 +24,45 @@
       "import": "./dist/scoring/givecareScore.js",
       "types": "./dist/scoring/givecareScore.d.ts"
     },
-    "./benefits": {
-      "import": "./dist/benefits/screener.js",
-      "types": "./dist/benefits/screener.d.ts"
-    },
     "./sms": {
-      "import": "./dist/sms/classification.js",
-      "types": "./dist/sms/classification.d.ts"
+      "import": "./dist/sms/index.js",
+      "types": "./dist/sms/index.d.ts"
     },
-    "./transitions": {
-      "import": "./dist/transitions.js",
-      "types": "./dist/transitions.d.ts"
+    "./sms/regulatory": {
+      "import": "./dist/sms/regulatory.js",
+      "types": "./dist/sms/regulatory.d.ts"
+    },
+    "./sms/quiet-hours": {
+      "import": "./dist/sms/quietHours.js",
+      "types": "./dist/sms/quietHours.d.ts"
     },
     "./geo": {
       "import": "./dist/geo/timezone.js",
       "types": "./dist/geo/timezone.d.ts"
+    },
+    "./geo/timezone": {
+      "import": "./dist/geo/timezone.js",
+      "types": "./dist/geo/timezone.d.ts"
+    },
+    "./geo/zip-to-state": {
+      "import": "./dist/geo/zipToState.js",
+      "types": "./dist/geo/zipToState.d.ts"
     }
   },
   "files": [
     "dist",
     "LICENSE",
-    "README.md"
+    "README.md",
+    "GC-SDOH.md",
+    "docs"
   ],
   "scripts": {
+    "prebuild": "rm -rf dist",
     "build": "tsc",
     "typecheck": "tsc --noEmit",
-    "test": "npm run typecheck",
+    "sync:care-domain": "node scripts/sync-care-domain.mjs",
+    "check:care-domain": "node scripts/sync-care-domain.mjs --check",
+    "test": "npm run typecheck && npm run check:care-domain",
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
