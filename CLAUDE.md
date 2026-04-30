@@ -28,7 +28,8 @@ Open-source caregiving domain logic SDK. Pure functions, zero I/O.
 | Task | Command |
 |------|---------|
 | Build | npm run build |
-| Typecheck | npx tsc --noEmit |
+| Typecheck | npm run typecheck |
+| Test | npm test |
 
 ## Conventions
 

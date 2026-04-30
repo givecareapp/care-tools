@@ -48,7 +48,9 @@
   ],
   "scripts": {
     "build": "tsc",
-    "prepublishOnly": "tsc"
+    "typecheck": "tsc --noEmit",
+    "test": "npm run typecheck",
+    "prepublishOnly": "npm run build"
   },
   "devDependencies": {
     "typescript": "^5.7.0"
