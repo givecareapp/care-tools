@@ -48,7 +48,7 @@ Instrument responses (0-4 deficit scale)
 - **Deficit Framing**: Higher raw value = worse outcome, inverted during normalization.
 - **Instrument Routing**: `mapInstrumentToZones()` dispatches by instrument name to zone mappings.
 - **Adaptive Assessment**: SDOH-6/EMA-3 identify flagged zones; SDOH-30 deepens only flagged zones.
-- **Public-Safe Sync**: `scripts/sync-care-domain.mjs` copies only basic helpers from internal care-domain.
+- **Public-Safe Sync**: `scripts/sync-care-domain.mjs` copies only basic helpers still owned by internal care-domain. Quiet-hours helpers are locally owned in this public package.
 
 ## Common Tasks
 

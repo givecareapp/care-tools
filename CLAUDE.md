@@ -33,7 +33,7 @@ Excluded:
 | src/geo/timezone.ts | Area code -> timezone inference |
 | src/geo/zipToState.ts | ZIP -> US state lookup |
 | src/lib/time.ts | `days()` helper |
-| scripts/sync-care-domain.mjs | Copies public-safe helpers from sibling `gc-sms` care-domain |
+| scripts/sync-care-domain.mjs | Copies selected public-safe helpers from sibling `gc-sms` care-domain |
 | GC-SDOH.md | Full assessment spec |
 
 ## Commands
@@ -52,10 +52,9 @@ Internal production logic lives in `../gc-sms/packages/care-domain/src`. Only th
 - `geo/timezone.ts`
 - `geo/zipToState.ts`
 - `lib/time.ts`
-- `sms/quietHours.ts`
 - `sms/regulatory.ts`
 
-Assessment and scoring files are public-specific and should be edited deliberately here unless the matching care-domain change is reviewed for public safety.
+`src/sms/quietHours.ts`, assessment files, and scoring files are public-specific and should be edited deliberately here unless the matching care-domain change is reviewed for public safety.
 
 ## Conventions
 

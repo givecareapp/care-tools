@@ -14,7 +14,6 @@ const SYNC_FILES = [
   'geo/timezone.ts',
   'geo/zipToState.ts',
   'lib/time.ts',
-  'sms/quietHours.ts',
   'sms/regulatory.ts',
 ]
 

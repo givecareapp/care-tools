@@ -99,13 +99,14 @@ scripts/
 
 ## Care-domain sync policy
 
-GiveCare's internal `gc-sms/packages/care-domain` package is the production source for shared domain logic. This public repo only syncs files that are safe and intentionally open:
+GiveCare's internal `gc-sms/packages/care-domain` package is the production source for selected shared domain logic. This public repo only syncs files that are safe, intentionally open, and still owned by `care-domain`:
 
 - `geo/timezone.ts`
 - `geo/zipToState.ts`
 - `lib/time.ts`
-- `sms/quietHours.ts`
 - `sms/regulatory.ts`
+
+`sms/quietHours.ts` is locally owned in this public package; it is not currently mirrored from `care-domain`.
 
 Run from a workspace that has sibling `../gc-sms`:
 
