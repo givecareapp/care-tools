@@ -48,13 +48,13 @@ Instrument responses (0-4 deficit scale)
 - **Deficit Framing**: Higher raw value = worse outcome, inverted during normalization.
 - **Instrument Routing**: `mapInstrumentToZones()` dispatches by instrument name to zone mappings.
 - **Adaptive Assessment**: SDOH-6/EMA-3 identify flagged zones; SDOH-30 deepens only flagged zones.
-- **Public-Safe Sync**: `scripts/sync-care-domain.mjs` copies only basic helpers still owned by internal care-domain. Quiet-hours helpers are locally owned in this public package.
+- **Public-Safe Sync**: `scripts/sync-care-domain.mjs` optionally compares basic helpers against `GIVECARE_CARE_DOMAIN_SRC`. Quiet-hours helpers are locally owned in this public package.
 
 ## Common Tasks
 
 | Task | Steps |
 |------|-------|
-| Sync helper drift | Run `npm run sync:care-domain` from a workspace with sibling `../gc-sms` |
+| Sync helper drift | Run `GIVECARE_CARE_DOMAIN_SRC=/path/to/care-domain/src npm run check:care-domain` |
 | Add new public instrument | 1. Define in `assessments/instruments.ts` 2. Add zone mapping in `scoring/givecareScore.ts` 3. Add to `mapInstrumentToZones()` switch |
 | Add new zone | 1. Add to `ZoneCode` + `ZONES` 2. Add weight/label 3. Update instrument mappings and docs |
 | Check package | Run `npm test && npm run build` |

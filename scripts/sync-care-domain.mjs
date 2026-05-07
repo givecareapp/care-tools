@@ -6,8 +6,7 @@ import { fileURLToPath } from 'node:url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const repoRoot = path.resolve(__dirname, '..')
-const defaultCareDomainSrc = path.resolve(repoRoot, '..', 'gc-sms', 'packages', 'care-domain', 'src')
-const careDomainSrc = path.resolve(process.env.GIVECARE_CARE_DOMAIN_SRC || defaultCareDomainSrc)
+const sourceFromEnv = process.env.GIVECARE_CARE_DOMAIN_SRC
 const checkOnly = process.argv.includes('--check')
 
 const SYNC_FILES = [
@@ -21,9 +20,16 @@ function rel(p) {
   return path.relative(repoRoot, p)
 }
 
-if (!fs.existsSync(careDomainSrc)) {
-  console.log(`care-domain source not found at ${careDomainSrc}; skipping sync check`)
+if (!sourceFromEnv) {
+  console.log('GIVECARE_CARE_DOMAIN_SRC not set; skipping optional care-domain sync check')
   process.exit(0)
+}
+
+const careDomainSrc = path.resolve(sourceFromEnv)
+
+if (!fs.existsSync(careDomainSrc)) {
+  console.error(`care-domain source not found at ${careDomainSrc}`)
+  process.exit(1)
 }
 
 const drifted = []
@@ -48,7 +54,7 @@ for (const file of SYNC_FILES) {
 if (checkOnly && drifted.length > 0) {
   console.error('Public-safe care-domain drift detected:')
   for (const file of drifted) console.error(`  - ${file}`)
-  console.error('Run: npm run sync:care-domain')
+  console.error('Run: GIVECARE_CARE_DOMAIN_SRC=/path/to/care-domain/src npm run sync:care-domain')
   process.exit(1)
 }
 

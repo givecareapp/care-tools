@@ -6,7 +6,7 @@ Open-source caregiver SDOH assessment and scoring toolkit. Pure functions, zero 
 
 ## Scope
 
-This repo is intentionally narrower than internal `gc-sms/packages/care-domain`.
+This repo is intentionally narrower than GiveCare's internal runtime domain logic.
 
 Included:
 
@@ -33,21 +33,21 @@ Excluded:
 | src/geo/timezone.ts | Area code -> timezone inference |
 | src/geo/zipToState.ts | ZIP -> US state lookup |
 | src/lib/time.ts | `days()` helper |
-| scripts/sync-care-domain.mjs | Copies selected public-safe helpers from sibling `gc-sms` care-domain |
+| scripts/sync-care-domain.mjs | Optional drift check against an explicitly supplied care-domain source |
 | GC-SDOH.md | Full assessment spec |
 
 ## Commands
 
 | Task | Command |
 |------|---------|
-| Sync public-safe helpers from care-domain | npm run sync:care-domain |
+| Optional care-domain drift check | GIVECARE_CARE_DOMAIN_SRC=/path/to/source npm run check:care-domain |
 | Build | npm run build |
 | Typecheck | npm run typecheck |
 | Test | npm test |
 
 ## Sync policy
 
-Internal production logic lives in `../gc-sms/packages/care-domain/src`. Only these public-safe files are copied by `npm run sync:care-domain`:
+There is no default internal source path. Set `GIVECARE_CARE_DOMAIN_SRC` only when intentionally comparing against a reviewed source tree. The optional sync script is limited to these public-safe files:
 
 - `geo/timezone.ts`
 - `geo/zipToState.ts`

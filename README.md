@@ -94,12 +94,12 @@ src/
   geo/zipToState.ts           # ZIP → US state lookup
   lib/time.ts                 # days() helper
 scripts/
-  sync-care-domain.mjs        # Copies public-safe helper files from internal care-domain
+  sync-care-domain.mjs        # Optional public-safe helper drift check
 ```
 
 ## Care-domain sync policy
 
-GiveCare's internal `gc-sms/packages/care-domain` package is the production source for selected shared domain logic. This public repo only syncs files that are safe, intentionally open, and still owned by `care-domain`:
+This public repo owns its runtime surface. The optional sync script only runs when `GIVECARE_CARE_DOMAIN_SRC` points at a reviewed source tree, and it is limited to files that are safe and intentionally open:
 
 - `geo/timezone.ts`
 - `geo/zipToState.ts`
@@ -108,14 +108,14 @@ GiveCare's internal `gc-sms/packages/care-domain` package is the production sour
 
 `sms/quietHours.ts` is locally owned in this public package; it is not currently mirrored from `care-domain`.
 
-Run from a workspace that has sibling `../gc-sms`:
+Run only when comparing against an explicit source tree:
 
 ```bash
-npm run sync:care-domain
-npm test
+GIVECARE_CARE_DOMAIN_SRC=/path/to/care-domain/src npm run check:care-domain
+GIVECARE_CARE_DOMAIN_SRC=/path/to/care-domain/src npm run sync:care-domain
 ```
 
-If `../gc-sms` is absent, the drift check skips so the public repo remains usable standalone.
+If `GIVECARE_CARE_DOMAIN_SRC` is unset, the drift check skips so the public repo remains usable standalone.
 
 ## Use cases
 
