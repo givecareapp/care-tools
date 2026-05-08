@@ -1,7 +1,5 @@
 /**
  * GiveCare composite scoring: zone model, bands, confidence, trending.
- *
- * Backported from production (care-domain/scoring/givecareScore.ts).
  * Composes instrument results into a single 0-100 score across six zones.
  */
 
