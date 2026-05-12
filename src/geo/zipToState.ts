@@ -1,8 +1,3 @@
-/**
- * Maps a US 5-digit zip code to a 2-letter state abbreviation
- * using USPS 3-digit prefix ranges.
- */
-
 type Range = [min: number, max: number, state: string]
 
 // USPS 3-digit prefix -> state mapping (sorted by min)

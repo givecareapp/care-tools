@@ -1,13 +1,5 @@
-/**
- * GiveCare composite scoring: zone model, bands, confidence, trending.
- * Composes instrument results into a single 0-100 score across six zones.
- */
-
 import type { InstrumentName, ZoneCode } from '../assessments/instruments'
-
-// ---------------------------------------------------------------------------
-// Zone Model
-// ---------------------------------------------------------------------------
+import { days } from '../lib/time'
 
 export type { ZoneCode }
 
@@ -31,10 +23,6 @@ export const ZONE_WEIGHTS: Record<ZoneCode, number> = {
   P6: 0.2,
 }
 
-// ---------------------------------------------------------------------------
-// Bands
-// ---------------------------------------------------------------------------
-
 export type Band = 'strong' | 'steady' | 'building' | 'needs_attention'
 
 export const BAND_LABELS: Record<Band, string> = {
@@ -51,10 +39,6 @@ export function toBand(score: number): Band {
   return 'needs_attention'
 }
 
-// ---------------------------------------------------------------------------
-// Confidence
-// ---------------------------------------------------------------------------
-
 export type ConfidenceLevel = 'early_estimate' | 'building' | 'solid'
 
 export function getConfidence(completedInstruments: string[]): ConfidenceLevel {
@@ -63,10 +47,6 @@ export function getConfidence(completedInstruments: string[]): ConfidenceLevel {
   if (count === 2) return 'building'
   return 'solid'
 }
-
-// ---------------------------------------------------------------------------
-// Zone Data & Normalization
-// ---------------------------------------------------------------------------
 
 export interface ZoneDataPoint {
   value: number // normalized 0-1
@@ -83,10 +63,6 @@ function normalizeItem(raw: number, min: number, max: number, invert: boolean): 
   const clamped = Math.max(0, Math.min(1, normalized))
   return invert ? 1 - clamped : clamped
 }
-
-// ---------------------------------------------------------------------------
-// Instrument → Zone Mappings
-// ---------------------------------------------------------------------------
 
 /** Map EMA-3 subscores to zones. stress → P2 (inverted), mood+coping → P6 (direct) */
 export function mapEma3ToZones(subscores: Record<string, number>): ZoneData {
@@ -158,10 +134,6 @@ export function mapInstrumentToZones(
   }
 }
 
-// ---------------------------------------------------------------------------
-// Zone Aggregation
-// ---------------------------------------------------------------------------
-
 /** Merge multiple ZoneData sources, concatenating data points per zone. */
 export function mergeZoneData(...sources: ZoneData[]): ZoneData {
   const merged: ZoneData = {}
@@ -188,10 +160,6 @@ export function computeZoneScores(data: ZoneData): ZoneScores {
   return scores
 }
 
-// ---------------------------------------------------------------------------
-// Adaptive Deep-Dive
-// ---------------------------------------------------------------------------
-
 const ZONE_FLAG_THRESHOLD = 40
 
 /** Identify zones from SDOH-6 results that need deeper assessment. */
@@ -201,10 +169,6 @@ export function flaggedZones(zoneScores: ZoneScores): ZoneCode[] {
     return score !== undefined && score < ZONE_FLAG_THRESHOLD
   })
 }
-
-// ---------------------------------------------------------------------------
-// Composite Score
-// ---------------------------------------------------------------------------
 
 export interface GiveCareScoreResult {
   score: number
@@ -266,10 +230,6 @@ export function computeGiveCareScore(
   }
 }
 
-// ---------------------------------------------------------------------------
-// Full Pipeline
-// ---------------------------------------------------------------------------
-
 export interface InstrumentResult {
   instrument: InstrumentName
   subscores: Record<string, number>
@@ -297,10 +257,6 @@ export function computeGiveCareScoreFromInstruments(
   return computeGiveCareScore(zoneScores, instruments)
 }
 
-// ---------------------------------------------------------------------------
-// Trending
-// ---------------------------------------------------------------------------
-
 export type TrendDirection = 'improving' | 'stable' | 'declining'
 
 export interface ScoreTrend {
@@ -309,7 +265,7 @@ export interface ScoreTrend {
   direction: TrendDirection
 }
 
-const MS_PER_DAY = 24 * 60 * 60 * 1000
+const MS_PER_DAY = days(1)
 
 export function computeScoreTrend(
   current: number,
@@ -332,10 +288,6 @@ export function computeScoreTrend(
 
   return { delta7d, delta30d, direction }
 }
-
-// ---------------------------------------------------------------------------
-// Spike Detection
-// ---------------------------------------------------------------------------
 
 export interface Spike {
   magnitude: number

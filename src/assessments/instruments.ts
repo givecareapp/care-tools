@@ -1,14 +1,3 @@
-/**
- * GiveCare assessment instrument definitions and scoring.
- *
- * Backported from production (care-domain/assessments/instruments.ts).
- * All SMS-administered instruments: SDOH-6, EMA-3, SDOH-30.
- */
-
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
-
 export type InstrumentName = 'sdoh6' | 'ema3' | 'sdoh30'
 
 export type ZoneCode = 'P1' | 'P2' | 'P3' | 'P4' | 'P5' | 'P6'
@@ -43,10 +32,7 @@ export interface Sdoh30Question {
   zone: ZoneCode
 }
 
-// ---------------------------------------------------------------------------
 // SDOH-6: Six-domain snapshot (Tier 1 quick screen)
-// ---------------------------------------------------------------------------
-
 const SDOH6: AssessmentInstrument = {
   instrument: 'sdoh6',
   version: 'v1',
@@ -97,10 +83,7 @@ const SDOH6: AssessmentInstrument = {
   ],
 }
 
-// ---------------------------------------------------------------------------
 // EMA-3: Daily wellbeing micro-check
-// ---------------------------------------------------------------------------
-
 const EMA3: AssessmentInstrument = {
   instrument: 'ema3',
   version: 'v1',
@@ -130,12 +113,8 @@ const EMA3: AssessmentInstrument = {
   ],
 }
 
-// ---------------------------------------------------------------------------
 // SDOH-30: Adaptive deep-dive (5 questions per zone, 0-4 deficit-framed)
-// Aligned to canonical P1-P6 zones. Informed by PRAPARE/AHC-HRSN methodology.
-// Administered selectively per flagged zone, not as a full 30-question battery.
-// ---------------------------------------------------------------------------
-
+// Aligned to P1-P6 zones. Informed by PRAPARE/AHC-HRSN. Administered selectively per flagged zone.
 export const SDOH30_QUESTIONS: Sdoh30Question[] = [
   // P1: Social Support
   {
@@ -360,10 +339,6 @@ export const SDOH30_QUESTIONS: Sdoh30Question[] = [
   },
 ]
 
-// ---------------------------------------------------------------------------
-// SDOH-30 as AssessmentInstrument
-// ---------------------------------------------------------------------------
-
 const SDOH30: AssessmentInstrument = {
   instrument: 'sdoh30',
   version: 'v1',
@@ -376,10 +351,6 @@ const SDOH30: AssessmentInstrument = {
     domain: zone,
   })),
 }
-
-// ---------------------------------------------------------------------------
-// Instrument registry
-// ---------------------------------------------------------------------------
 
 const INSTRUMENTS: Record<InstrumentName, AssessmentInstrument> = {
   sdoh6: SDOH6,
@@ -398,10 +369,6 @@ export function getInstrument(instrument: InstrumentName, version = 'v1'): Asses
 export function listInstruments(): AssessmentInstrument[] {
   return [SDOH6, EMA3, SDOH30]
 }
-
-// ---------------------------------------------------------------------------
-// Scoring
-// ---------------------------------------------------------------------------
 
 export function scoreInstrument(
   instrument: InstrumentName,
@@ -429,10 +396,6 @@ export function scoreInstrument(
   }
 }
 
-// ---------------------------------------------------------------------------
-// SDOH-30 helpers
-// ---------------------------------------------------------------------------
-
 /** Get SDOH-30 questions for specific zones (adaptive deep-dive). */
 export function getSdoh30QuestionsForZones(zones: ZoneCode[]): Sdoh30Question[] {
   const zoneSet = new Set(zones)
@@ -447,10 +410,6 @@ export function getSdoh30NextChunk(completedItemIds: string[], chunkSize: number
   const completed = new Set(completedItemIds)
   return SDOH30_ITEM_IDS.filter(id => !completed.has(id)).slice(0, chunkSize)
 }
-
-// ---------------------------------------------------------------------------
-// Internal helpers
-// ---------------------------------------------------------------------------
 
 function toRiskBand(score: number, maxScore: number): 'low' | 'moderate' | 'high' | 'critical' {
   const ratio = maxScore > 0 ? score / maxScore : 0
