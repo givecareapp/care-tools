@@ -47,7 +47,7 @@ Excluded:
 
 ## Sync policy
 
-There is no default internal source path. Set `GIVECARE_CARE_DOMAIN_SRC` only when intentionally comparing against a reviewed source tree. The optional sync script is limited to these public-safe files:
+There is no default internal source path. Set `GIVECARE_CARE_DOMAIN_SRC` only when intentionally comparing against a reviewed source tree. `npm test` runs `check:care-domain`, but that check exits successfully with a skip message when `GIVECARE_CARE_DOMAIN_SRC` is unset; do not treat it as drift evidence unless the env var is present. The optional sync script is limited to these public-safe files:
 
 - `geo/timezone.ts`
 - `geo/zipToState.ts`
