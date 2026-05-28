@@ -8,6 +8,18 @@
     "type": "git",
     "url": "https://github.com/givecareapp/care-tools"
   },
+  "keywords": [
+    "sdoh",
+    "caregiver",
+    "social-determinants",
+    "assessment",
+    "scoring",
+    "sms",
+    "givecare"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -62,10 +74,13 @@
     "typecheck": "tsc --noEmit",
     "sync:care-domain": "node scripts/sync-care-domain.mjs",
     "check:care-domain": "node scripts/sync-care-domain.mjs --check",
-    "test": "npm run typecheck && npm run check:care-domain",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "ci": "npm run typecheck && npm run check:care-domain && vitest run",
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
-    "typescript": "^5.7.0"
+    "typescript": "^5.7.0",
+    "vitest": "^4.1.7"
   }
 }
