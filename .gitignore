@@ -1,7 +1,6 @@
 # Agent artifacts
 .claude/
 .specify/
-.night-nurse/
 logs/
 reports/
 state/
