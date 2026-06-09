@@ -1,6 +1,8 @@
 # GiveCare Tools
 
 > Ecosystem context: see `~/agents/wiki/givecare-system.md` — this repo is in the **open-source credibility** domain.
+>
+> Direction: see `VISION.md` — product bet, current focus, and agent guardrails. `CHARTER.md` owns the ownership and evaluation contract.
 
 Open-source caregiver SDOH assessment and scoring toolkit. Pure functions, zero I/O.
 
