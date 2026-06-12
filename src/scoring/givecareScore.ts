@@ -267,20 +267,29 @@ export interface ScoreTrend {
 
 const MS_PER_DAY = days(1)
 
+function historyWithinDays(
+  history: Array<{ score: number; computedAt: number }>,
+  effectiveNow: number,
+  daysBack: number
+): Array<{ score: number; computedAt: number }> {
+  const cutoff = effectiveNow - daysBack * MS_PER_DAY
+  return history
+    .filter(entry => entry.computedAt >= cutoff && entry.computedAt <= effectiveNow)
+    .sort((a, b) => a.computedAt - b.computedAt)
+}
+
 export function computeScoreTrend(
   current: number,
   history: Array<{ score: number; computedAt: number }>,
   now?: number
 ): ScoreTrend {
   const effectiveNow = now ?? Date.now()
-  const sorted = [...history].sort((a, b) => b.computedAt - a.computedAt)
 
-  const within7d = sorted.filter(e => e.computedAt >= effectiveNow - 7 * MS_PER_DAY)
-  const within30d = sorted.filter(e => e.computedAt >= effectiveNow - 30 * MS_PER_DAY)
+  const within7d = historyWithinDays(history, effectiveNow, 7)
+  const within30d = historyWithinDays(history, effectiveNow, 30)
 
-  const delta7d = within7d.length > 0 ? current - within7d[within7d.length - 1].score : undefined
-  const delta30d =
-    within30d.length > 0 ? current - within30d[within30d.length - 1].score : undefined
+  const delta7d = within7d.length > 0 ? current - within7d[0].score : undefined
+  const delta30d = within30d.length > 0 ? current - within30d[0].score : undefined
 
   const recentDelta = delta7d ?? delta30d ?? 0
   const direction: TrendDirection =
@@ -301,9 +310,7 @@ export function detectSpike(
   now?: number
 ): Spike | null {
   const effectiveNow = now ?? Date.now()
-  const recent = history
-    .filter(h => h.computedAt >= effectiveNow - 7 * MS_PER_DAY)
-    .sort((a, b) => a.computedAt - b.computedAt)
+  const recent = historyWithinDays(history, effectiveNow, 7)
 
   if (recent.length === 0) return null
 

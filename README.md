@@ -61,13 +61,13 @@ const sdoh6 = scoreInstrument('sdoh6', 'v1', {
   burnout: 3,
 })
 
-// Compute composite GiveCare Score (0-100)
+// Compute composite GiveCare Score (0-100; higher = lower pressure)
 const composite = computeGiveCareScoreFromInstruments([
   { instrument: 'sdoh6', subscores: sdoh6.subscores },
   { instrument: 'ema3', subscores: { stress: 2, mood: 3, coping: 2 } },
 ])
 
-// Adaptive deep-dive: find flagged zones and get targeted questions
+// Adaptive deep-dive: find flagged zones and get remaining targeted questions
 const flagged = flaggedZones(composite.zones) // e.g. ['P4', 'P6']
 const deepDiveQuestions = getSdoh30QuestionsForZones(flagged)
 ```

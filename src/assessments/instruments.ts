@@ -3,18 +3,18 @@ export type InstrumentName = 'sdoh6' | 'ema3' | 'sdoh30'
 export type ZoneCode = 'P1' | 'P2' | 'P3' | 'P4' | 'P5' | 'P6'
 
 export interface AssessmentQuestion {
-  id: string
-  prompt: string
-  min: number
-  max: number
-  domain: string
+  readonly id: string
+  readonly prompt: string
+  readonly min: number
+  readonly max: number
+  readonly domain: string
 }
 
 export interface AssessmentInstrument {
-  instrument: InstrumentName
-  version: string
-  title: string
-  questions: AssessmentQuestion[]
+  readonly instrument: InstrumentName
+  readonly version: string
+  readonly title: string
+  readonly questions: readonly AssessmentQuestion[]
 }
 
 export interface AssessmentScore {
@@ -25,15 +25,26 @@ export interface AssessmentScore {
 }
 
 export interface Sdoh30Question {
-  id: string
-  prompt: string
-  min: number
-  max: number
-  zone: ZoneCode
+  readonly id: string
+  readonly prompt: string
+  readonly min: number
+  readonly max: number
+  readonly zone: ZoneCode
+}
+
+function freezeItems<T extends object>(items: readonly T[]): readonly Readonly<T>[] {
+  return Object.freeze(items.map(item => Object.freeze({ ...item })))
+}
+
+function freezeInstrument(instrument: AssessmentInstrument): AssessmentInstrument {
+  return Object.freeze({
+    ...instrument,
+    questions: freezeItems(instrument.questions),
+  })
 }
 
 // SDOH-6: Six-domain snapshot (Tier 1 quick screen)
-const SDOH6: AssessmentInstrument = {
+const SDOH6: AssessmentInstrument = freezeInstrument({
   instrument: 'sdoh6',
   version: 'v1',
   title: 'SDOH six-domain snapshot',
@@ -81,10 +92,10 @@ const SDOH6: AssessmentInstrument = {
       domain: 'burnout',
     },
   ],
-}
+})
 
 // EMA-3: Daily wellbeing micro-check
-const EMA3: AssessmentInstrument = {
+const EMA3: AssessmentInstrument = freezeInstrument({
   instrument: 'ema3',
   version: 'v1',
   title: 'Daily wellbeing micro-check',
@@ -111,11 +122,11 @@ const EMA3: AssessmentInstrument = {
       domain: 'coping',
     },
   ],
-}
+})
 
 // SDOH-30: Adaptive deep-dive (5 questions per zone, 0-4 deficit-framed)
 // Aligned to P1-P6 zones. Informed by PRAPARE/AHC-HRSN. Administered selectively per flagged zone.
-export const SDOH30_QUESTIONS: Sdoh30Question[] = [
+export const SDOH30_QUESTIONS: readonly Sdoh30Question[] = freezeItems([
   // P1: Social Support
   {
     id: 'P1-1',
@@ -337,9 +348,9 @@ export const SDOH30_QUESTIONS: Sdoh30Question[] = [
     max: 4,
     zone: 'P6',
   },
-]
+])
 
-const SDOH30: AssessmentInstrument = {
+const SDOH30: AssessmentInstrument = freezeInstrument({
   instrument: 'sdoh30',
   version: 'v1',
   title: 'Adaptive deep-dive social determinants (SDOH-30)',
@@ -350,13 +361,13 @@ const SDOH30: AssessmentInstrument = {
     max,
     domain: zone,
   })),
-}
+})
 
-const INSTRUMENTS: Record<InstrumentName, AssessmentInstrument> = {
+const INSTRUMENTS: Readonly<Record<InstrumentName, AssessmentInstrument>> = Object.freeze({
   sdoh6: SDOH6,
   ema3: EMA3,
   sdoh30: SDOH30,
-}
+})
 
 export function getInstrument(instrument: InstrumentName, version = 'v1'): AssessmentInstrument {
   const candidate = INSTRUMENTS[instrument]
@@ -397,16 +408,27 @@ export function scoreInstrument(
 }
 
 /** Get SDOH-30 questions for specific zones (adaptive deep-dive). */
-export function getSdoh30QuestionsForZones(zones: ZoneCode[]): Sdoh30Question[] {
+export function getSdoh30QuestionsForZones(zones: readonly ZoneCode[]): Sdoh30Question[] {
   const zoneSet = new Set(zones)
-  return SDOH30_QUESTIONS.filter(q => zoneSet.has(q.zone))
+  return SDOH30_QUESTIONS.filter(
+    q => zoneSet.has(q.zone) && q.id !== QUICK6_SDOH30_REPRESENTATIVE_IDS[q.zone]
+  )
 }
 
+const QUICK6_SDOH30_REPRESENTATIVE_IDS: Readonly<Record<ZoneCode, string>> = Object.freeze({
+  P1: 'P1-1',
+  P2: 'P2-1',
+  P3: 'P3-1',
+  P4: 'P4-1',
+  P5: 'P5-1',
+  P6: 'P6-1',
+})
+
 /** All SDOH-30 item IDs in definition order. */
-export const SDOH30_ITEM_IDS: string[] = SDOH30_QUESTIONS.map(q => q.id)
+export const SDOH30_ITEM_IDS: readonly string[] = Object.freeze(SDOH30_QUESTIONS.map(q => q.id))
 
 /** Get the next chunk of SDOH-30 items not yet completed. */
-export function getSdoh30NextChunk(completedItemIds: string[], chunkSize: number): string[] {
+export function getSdoh30NextChunk(completedItemIds: readonly string[], chunkSize: number): string[] {
   const completed = new Set(completedItemIds)
   return SDOH30_ITEM_IDS.filter(id => !completed.has(id)).slice(0, chunkSize)
 }

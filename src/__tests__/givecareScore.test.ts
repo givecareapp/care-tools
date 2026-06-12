@@ -421,6 +421,25 @@ describe('computeScoreTrend', () => {
     expect(trend.delta30d).toBe(30)
     expect(trend.direction).toBe('improving') // falls back to delta30d
   })
+
+  it('ignores future-dated entries', () => {
+    const history = [
+      { score: 90, computedAt: NOW + DAY },
+      { score: 40, computedAt: NOW - 3 * DAY },
+    ]
+    const trend = computeScoreTrend(50, history, NOW)
+    expect(trend.delta7d).toBe(10)
+    expect(trend.delta30d).toBe(10)
+    expect(trend.direction).toBe('improving')
+  })
+
+  it('returns stable when history is only future-dated', () => {
+    const history = [{ score: 90, computedAt: NOW + DAY }]
+    const trend = computeScoreTrend(50, history, NOW)
+    expect(trend.delta7d).toBeUndefined()
+    expect(trend.delta30d).toBeUndefined()
+    expect(trend.direction).toBe('stable')
+  })
 })
 
 // ---------------------------------------------------------------------------
@@ -472,6 +491,22 @@ describe('detectSpike', () => {
 
   it('returns null for small swings (< 20)', () => {
     const history = [{ score: 40, computedAt: NOW - 3 * DAY }]
+    expect(detectSpike(50, history, NOW)).toBeNull()
+  })
+
+  it('ignores future-dated entries', () => {
+    const history = [
+      { score: 90, computedAt: NOW + DAY },
+      { score: 30, computedAt: NOW - 3 * DAY },
+    ]
+    const spike = detectSpike(50, history, NOW)
+    expect(spike).not.toBeNull()
+    expect(spike!.direction).toBe('improvement')
+    expect(spike!.magnitude).toBe(20)
+  })
+
+  it('returns null when recent history is only future-dated', () => {
+    const history = [{ score: 90, computedAt: NOW + DAY }]
     expect(detectSpike(50, history, NOW)).toBeNull()
   })
 })

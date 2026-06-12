@@ -35,7 +35,8 @@ Select the question from each zone that has the highest correlation with the tot
 
 **Scoring:**
 - Calculate preliminary zone scores (1 data point per zone, confidence = 1/N where N is total questions in zone)
-- Flag zones with scores >50 (on normalized 0-100 scale) for deep dive
+- Zone scores use the GiveCare convention: 0-100, higher = more stable / lower pressure
+- Flag zones with scores below 40 for deep dive
 
 ### Tier 2: SDOH-Deep-Dive (3-4 minutes)
 
@@ -43,8 +44,8 @@ Select the question from each zone that has the highest correlation with the tot
 
 **Structure:**
 - Dynamic question set based on Quick-6 results
-- 3-4 questions per flagged zone only
-- Skips zones that scored <50 in Quick-6
+- 4 remaining questions per flagged zone only
+- Skips zones that scored 40 or above in Quick-6
 
 **Question Selection:**
 For each flagged zone, select 3-4 additional questions that:
@@ -103,12 +104,12 @@ START
    │
    ├─ Step 2: Calculate zone scores
    │
-   ├─ Step 3: Any zone score >50?
+   ├─ Step 3: Any zone score <40?
    │  │
    │  ├─ YES → Offer Deep Dive
    │  │   │
    │  │   ├─ "I see [zone names] could use more attention."
-   │  │   ├─ "May I ask 3-4 more questions about these areas
+   │  │   ├─ "May I ask up to 4 more questions about these areas
    │  │   │   for better recommendations?"
    │  │   │
    │  │   ├─ User accepts?
@@ -117,7 +118,7 @@ START
    │  │   │
    │  │   └─ Calculate final scores
    │  │
-   │  └─ NO → Complete (all zones <50)
+   │  └─ NO → Complete (all zones >=40)
    │      │
    │      └─ "Great news! Everything looks stable today."
 ```
@@ -176,7 +177,7 @@ Recommend parallel testing period:
 
 ### Time Efficiency
 - Average time saved per assessment
-- Target: 60%+ reduction for users scoring <50 on all zones
+- Target: 60%+ reduction for users scoring 40 or above on all zones
 
 ### Data Quality
 - Zone score correlation: Quick-6 vs. Full assessment
@@ -196,7 +197,7 @@ Recommend parallel testing period:
 - Validate question selection using item-total correlation from pilot data
 - Choose questions with highest predictive power
 - Monitor false-negative rate in production
-- Adjust threshold if needed (lower from 50 to 45)
+- Adjust threshold if needed (raise from 40 to 45 to catch more possible pressure zones)
 
 ### Risk 2: Users Skip Deep-Dive
 
@@ -204,7 +205,7 @@ Recommend parallel testing period:
 - Frame as "better recommendations" not "more burden"
 - Keep truly optional
 - Track Deep-Dive acceptance rate
-- If <50%, revise messaging or auto-trigger for very high scores (>70)
+- If <50%, revise messaging or auto-trigger for very low scores (<25)
 
 ### Risk 3: Score Inconsistency
 
@@ -253,9 +254,9 @@ Recommend parallel testing period:
 ## Technical Specifications
 
 ### Assessment Type Identifiers
-- `sdoh_quick`: Quick-6 screening
-- `sdoh_deep`: Deep-Dive targeted assessment
-- `sdoh`: Full SDOH-30 comprehensive
+- `sdoh6`: Quick-6 screening
+- `sdoh30`: SDOH-30 comprehensive instrument and targeted deep-dive question pool
+- `ema3`: Daily wellbeing micro-check
 
 ### Data Schema Requirements
 
@@ -294,7 +295,7 @@ confidence = allAnswers.length / totalQuestionsInZone
 
 **Risk Threshold:**
 ```
-if (zoneScore > 50 && confidence < 0.5) {
+if (zoneScore < 40 && confidence < 0.5) {
   flagForDeepDive = true
 }
 ```
@@ -305,17 +306,17 @@ if (zoneScore > 50 && confidence < 0.5) {
 1. User starts check-in
 2. System: "Quick 6-question check-in today!"
 3. User completes Quick-6 (2 minutes)
-4. All zones score <50
+4. All zones score 40 or above
 5. System: "Great! Everything looks stable. Here are your resources."
 6. **Time saved: 3-4 minutes**
 
 ### Flow 2: Mixed-Risk User
 1. User starts check-in
 2. User completes Quick-6 (2 minutes)
-3. P4 (Financial) scores 65, P5 (Legal) scores 55
-4. System: "I notice financial resources and healthcare navigation might need support. May I ask 4 more questions for better recommendations?"
+3. P4 (Financial) scores 35, P5 (Legal) scores 30
+4. System: "I notice financial resources and healthcare navigation might need support. May I ask up to 4 more questions per area for better recommendations?"
 5. User accepts
-6. User answers 4 Deep-Dive questions for P4 and P5 (2 minutes)
+6. User answers 8 Deep-Dive questions across P4 and P5 (2 minutes)
 7. System provides targeted financial and navigation resources
 8. **Time saved: 1-2 minutes vs. full assessment**
 

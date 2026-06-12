@@ -38,6 +38,24 @@ describe('getInstrument', () => {
   it('throws on unsupported version', () => {
     expect(() => getInstrument('sdoh6', 'v99')).toThrow('Unsupported instrument version')
   })
+
+  it('returns immutable canonical definitions', () => {
+    const sdoh6 = getInstrument('sdoh6')
+    expect(Object.isFrozen(sdoh6)).toBe(true)
+    expect(Object.isFrozen(sdoh6.questions)).toBe(true)
+    expect(Object.isFrozen(sdoh6.questions[0])).toBe(true)
+
+    const mutableSdoh6 = sdoh6 as unknown as { questions: Array<{ max: number }> }
+    expect(() => {
+      mutableSdoh6.questions[0].max = 100
+    }).toThrow()
+
+    const result = scoreInstrument('sdoh6', 'v1', {
+      financial: 4, social: 0, health: 0,
+      housing: 0, navigation: 0, burnout: 0,
+    })
+    expect(result.maxScore).toBe(24)
+  })
 })
 
 // ---------------------------------------------------------------------------
@@ -232,26 +250,47 @@ describe('SDOH-30 questions', () => {
       expect(q.max).toBe(4)
     }
   })
+
+  it('exposes immutable canonical questions and item ids', () => {
+    expect(Object.isFrozen(SDOH30_QUESTIONS)).toBe(true)
+    expect(Object.isFrozen(SDOH30_QUESTIONS[0])).toBe(true)
+    expect(Object.isFrozen(SDOH30_ITEM_IDS)).toBe(true)
+
+    const mutableQuestions = SDOH30_QUESTIONS as unknown as Array<{ max: number }>
+    expect(() => {
+      mutableQuestions[0].max = 100
+    }).toThrow()
+
+    const mutableIds = SDOH30_ITEM_IDS as unknown as string[]
+    expect(() => {
+      mutableIds.push('P9-1')
+    }).toThrow()
+  })
 })
 
 // ---------------------------------------------------------------------------
 // getSdoh30QuestionsForZones
 // ---------------------------------------------------------------------------
 describe('getSdoh30QuestionsForZones', () => {
-  it('returns questions for specified zones only', () => {
+  it('returns remaining deep-dive questions for specified zones only', () => {
     const result = getSdoh30QuestionsForZones(['P1', 'P4'])
-    expect(result).toHaveLength(10)
+    expect(result).toHaveLength(8)
     for (const q of result) {
       expect(['P1', 'P4']).toContain(q.zone)
     }
+  })
+
+  it('omits Quick-6 representative questions from deep-dive pools', () => {
+    const result = getSdoh30QuestionsForZones(['P4'])
+    expect(result.map(q => q.id)).toEqual(['P4-2', 'P4-3', 'P4-4', 'P4-5'])
   })
 
   it('returns empty array for empty zones', () => {
     expect(getSdoh30QuestionsForZones([])).toEqual([])
   })
 
-  it('returns all 30 for all zones', () => {
-    expect(getSdoh30QuestionsForZones(['P1', 'P2', 'P3', 'P4', 'P5', 'P6'])).toHaveLength(30)
+  it('returns 24 remaining deep-dive questions for all zones', () => {
+    expect(getSdoh30QuestionsForZones(['P1', 'P2', 'P3', 'P4', 'P5', 'P6'])).toHaveLength(24)
   })
 })
 
