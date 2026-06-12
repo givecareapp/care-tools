@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "stateDir": ".clawpatch",
+  "include": [
+    "src/**",
+    "scripts/**",
+    "docs/**",
+    "CHARTER.md",
+    "VISION.md",
+    "CLAUDE.md",
+    "README.md",
+    "GC-SDOH.md",
+    "package.json",
+    "package-lock.json",
+    "tsconfig.json"
+  ],
+  "exclude": [
+    ".git/**",
+    ".clawpatch/**",
+    ".claude/**",
+    ".codex/**",
+    ".specify/**",
+    "node_modules/**",
+    "dist/**",
+    "logs/**",
+    "reports/**",
+    "state/**",
+    ".env*",
+    "*.log",
+    "*.tmp",
+    "*.backup",
+    "*.bak",
+    "*.zip"
+  ],
+  "provider": {
+    "name": "codex",
+    "model": null,
+    "reasoningEffort": null
+  },
+  "commands": {
+    "typecheck": "npm run typecheck",
+    "lint": null,
+    "format": null,
+    "test": "npm run ci"
+  },
+  "review": {
+    "maxContextFiles": 18,
+    "maxOwnedFiles": 10,
+    "maxFindingsPerFeature": 8,
+    "minConfidenceToFix": "medium"
+  },
+  "git": {
+    "requireCleanWorktreeForFix": true,
+    "commit": false,
+    "openPr": false
+  }
+}
