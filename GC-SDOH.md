@@ -245,7 +245,7 @@ Originally created by Ali Madad (@amadad).
   author       = {Ali Madad},
   title        = {{GiveCare Tools}: Open-source frameworks for caregiving support and social determinants of health assessment},
   note         = {GC-SDOH-30 v3.0},
-  howpublished = {\url{https://github.com/givecareapp/care-tools}},
+  howpublished = {\url{https://github.com/givecareapp/givecare-tools}},
   year         = {2026}
 }
 ```

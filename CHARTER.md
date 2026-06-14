@@ -1,7 +1,7 @@
 # givecare-tools Charter
 
 This charter is an evaluation document, not an operating manual. For the shared
-GiveCare North Star, see `~/agents/wiki/givecare-system.md`.
+GiveCare North Star, see `~/agents/wiki/givecare/givecare-system.md`.
 
 ## Purpose
 
@@ -89,4 +89,4 @@ logic.
 - `CLAUDE.md`
 - `GC-SDOH.md`
 - `../givecare-evals/CHARTER.md`
-- `~/agents/wiki/givecare-system.md`
+- `~/agents/wiki/givecare/givecare-system.md`
