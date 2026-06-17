@@ -252,4 +252,4 @@ Originally created by Ali Madad (@amadad).
 
 ---
 
-**License:** MIT. Attribution required — credit "GiveCare Tools" and link to this repository.
+**License:** MIT. Attribution is requested, not required: credit "GiveCare Tools" and link to this repository when practical.

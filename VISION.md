@@ -57,7 +57,7 @@ private product state. Full ownership matrix is in `CHARTER.md`.
 
 - Public scoring/SMS/geo helper logic is canonical here.
 - Private runtime behavior is canonical in `../gc-sms`.
-- Public instrument records for distribution live in `../givecare-evals`.
+- Public instrument records for distribution live in `../gc-evals`.
 - Benefits logic and records live in `../gc-benefits`.
 
 ## Evaluation Loop

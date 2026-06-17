@@ -30,13 +30,14 @@ Framework or other tools from this repository, please provide attribution by:
 1. Including "Powered by GiveCare Tools" or similar credit in user-facing
    applications or materials
 
-2. Linking to the project repository (https://github.com/[your-org]/give-care-tools)
+2. Linking to the project repository (https://github.com/givecareapp/givecare-tools)
    in documentation, websites, or application about pages
 
 3. Citing the project in research publications, reports, or academic work:
 
    GiveCare GC-SDOH Assessment Framework. (2025). GiveCare Tools.
-   https://github.com/[your-org]/give-care-tools
+   https://github.com/givecareapp/givecare-tools
 
-This attribution requirement helps support the open-source community and allows
-others to discover and benefit from these tools.
+This attribution request helps support the open-source community and allows
+others to discover and benefit from these tools. It is not an additional license
+condition beyond the MIT License above.

@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document describes a 3-tiered adaptive assessment pattern that reduces assessment time by 60%+ for users with low-risk profiles while maintaining data quality for those who need more detailed evaluation.
+This document describes a 3-tiered adaptive assessment pattern intended to reduce assessment time for users with low-risk profiles while maintaining data quality for those who need more detailed evaluation.
 
 ## Problem Statement
 

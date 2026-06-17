@@ -38,7 +38,7 @@ logic.
   resource orchestration. Those belong in `../gc-sms`.
 - Benefits catalog, eligibility screening, and benefits source data. Those belong
   in `../gc-benefits`.
-- Public eval dataset packaging. That belongs in `../givecare-evals`.
+- Public eval dataset packaging. That belongs in `../gc-evals`.
 - Public web presentation. That belongs in `../gc-web`.
 - Any function that needs private product state, production data, or caregiver
   records.
@@ -88,5 +88,5 @@ logic.
 
 - `CLAUDE.md`
 - `GC-SDOH.md`
-- `../givecare-evals/CHARTER.md`
+- `../gc-evals/CHARTER.md`
 - `~/agents/wiki/givecare/givecare-system.md`
