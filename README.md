@@ -78,7 +78,8 @@ const deepDiveQuestions = getSdoh30QuestionsForZones(flagged)
 import { scoreInstrument } from '@givecare/tools/assessments'
 import { computeGiveCareScore } from '@givecare/tools/scoring'
 import { parseRegulatoryKeyword } from '@givecare/tools/sms'
-import { zipToState } from '@givecare/tools/geo/zip-to-state'
+import { inferTimezoneFromAreaCode, zipToState } from '@givecare/tools/geo'
+import { zipToState as zipToStateOnly } from '@givecare/tools/geo/zip-to-state'
 ```
 
 ## Project structure

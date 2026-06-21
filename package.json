@@ -49,8 +49,8 @@
       "types": "./dist/sms/quietHours.d.ts"
     },
     "./geo": {
-      "import": "./dist/geo/timezone.js",
-      "types": "./dist/geo/timezone.d.ts"
+      "import": "./dist/geo/index.js",
+      "types": "./dist/geo/index.d.ts"
     },
     "./geo/timezone": {
       "import": "./dist/geo/timezone.js",
