@@ -1,6 +1,6 @@
 # GiveCare Tools
 
-> Ecosystem context: see `~/agents/wiki/givecare/givecare-system.md` — this repo is in the **open-source credibility** domain.
+> Ecosystem context: see `~/wiki/pages/givecare/givecare-system.md` — this repo is in the **open-source credibility** domain.
 >
 > Direction: see `VISION.md` — product bet, current focus, and agent guardrails. `CHARTER.md` owns the ownership and evaluation contract.
 
