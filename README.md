@@ -34,6 +34,12 @@ All use a 0-4 deficit-framed scale. Six priority zones: Social Support (P1), Phy
 
 **Documentation:** See [GC-SDOH.md](./GC-SDOH.md) for complete questions, scoring, and implementation details.
 
+This repo is the **canonical owner of the public SDOH instrument definition** — the instrument ids, question prompts, zones, and scale. `npm run export:instruments` emits that shared definition to [`data/instruments-export.json`](./data/instruments-export.json); public distribution copies (e.g. the `givecare-evals` dataset) regenerate or parity-check against it rather than hand-syncing.
+
+## Public vs production scoring
+
+The GiveCare Score in this package is the **public, simplified** variant: a zone-weighted 0–100 composite over SDOH-6 / EMA-3 / SDOH-30, with risk bands `low / moderate / high / critical`. GiveCare's production runtime ships a fuller composite that weights by *instrument* and adds a licensed burden instrument (BSFC-s) the public repos deliberately exclude, and it labels the top band `severe` rather than `critical`. Those known, intentional divergences are tracked in [`data/production-delta.json`](./data/production-delta.json); this public definition is not meant to reproduce the shipped composite.
+
 ## Install
 
 ```bash
@@ -86,16 +92,20 @@ import { zipToState as zipToStateOnly } from '@givecare/tools/geo/zip-to-state'
 
 ```text
 src/
-  index.ts                    # Public barrel
-  assessments/instruments.ts  # SDOH-6, EMA-3, SDOH-30 definitions + scoreInstrument()
-  scoring/givecareScore.ts    # Zone model, composite scoring, trending, spike detection
-  sms/regulatory.ts           # STOP/START/HELP parsing
-  sms/quietHours.ts           # Quiet hours enforcement
-  geo/timezone.ts             # Area code → timezone inference
-  geo/zipToState.ts           # ZIP → US state lookup
-  lib/time.ts                 # days() helper
+  index.ts                       # Public barrel
+  assessments/instruments.ts     # SDOH-6, EMA-3, SDOH-30 definitions + scoreInstrument()
+  assessments/instrumentExport.ts# buildInstrumentExport() — canonical shared snapshot builder
+  scoring/givecareScore.ts       # Zone model, composite scoring, trending, spike detection
+  sms/regulatory.ts              # STOP/START/HELP parsing
+  sms/quietHours.ts              # Quiet hours enforcement
+  geo/timezone.ts                # Area code → timezone inference
+  geo/zipToState.ts              # ZIP → US state lookup
+  lib/time.ts                    # days() helper
+data/
+  instruments-export.json        # Canonical shared instrument snapshot (npm run export:instruments)
+  production-delta.json          # Declared gc-sms production divergences
 scripts/
-  sync-care-domain.mjs        # Optional public-safe helper drift check
+  sync-care-domain.mjs           # Optional public-safe helper drift check
 ```
 
 ## Care-domain sync policy

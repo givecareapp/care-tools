@@ -74,12 +74,14 @@
     "typecheck": "tsc --noEmit",
     "sync:care-domain": "node scripts/sync-care-domain.mjs",
     "check:care-domain": "node scripts/sync-care-domain.mjs --check",
+    "export:instruments": "vitest run -u src/__tests__/instrumentsExport.test.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "ci": "npm run typecheck && npm run check:care-domain && vitest run",
     "prepublishOnly": "npm run ci && npm run build"
   },
   "devDependencies": {
+    "@types/node": "^24.13.2",
     "typescript": "^5.7.0",
     "vitest": "^4.1.7"
   }

@@ -23,6 +23,20 @@ export const ZONE_WEIGHTS: Record<ZoneCode, number> = {
   P6: 0.2,
 }
 
+/**
+ * SDOH-6 quick-screen item id → GiveCare zone. One canonical decision site,
+ * shared by `mapSdoh6ToZones` and the instrument export (`buildInstrumentExport`)
+ * so the mapping cannot drift between scoring and the published snapshot.
+ */
+export const SDOH6_ZONE_MAP: Record<string, ZoneCode> = {
+  social: 'P1',
+  health: 'P2',
+  housing: 'P3',
+  financial: 'P4',
+  navigation: 'P5',
+  burnout: 'P6',
+}
+
 export type Band = 'strong' | 'steady' | 'building' | 'needs_attention'
 
 export const BAND_LABELS: Record<Band, string> = {
@@ -84,15 +98,7 @@ export function mapEma3ToZones(subscores: Record<string, number>): ZoneData {
 /** Map SDOH-6 subscores to zones. Deficit-framed (higher raw = worse). */
 export function mapSdoh6ToZones(subscores: Record<string, number>): ZoneData {
   const data: ZoneData = {}
-  const mappings: Array<{ key: string; zone: ZoneCode }> = [
-    { key: 'social', zone: 'P1' },
-    { key: 'health', zone: 'P2' },
-    { key: 'housing', zone: 'P3' },
-    { key: 'financial', zone: 'P4' },
-    { key: 'navigation', zone: 'P5' },
-    { key: 'burnout', zone: 'P6' },
-  ]
-  for (const { key, zone } of mappings) {
+  for (const [key, zone] of Object.entries(SDOH6_ZONE_MAP)) {
     if (subscores[key] !== undefined) {
       data[zone] = [{ value: normalizeItem(subscores[key], 0, 4, true), instrument: 'sdoh6' }]
     }
