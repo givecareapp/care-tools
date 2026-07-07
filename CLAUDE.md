@@ -51,14 +51,6 @@ Excluded:
 | Typecheck | npm run typecheck |
 | Test | npm test |
 
-## Clawpatch Review
-
-Use `docs/clawpatch-watchlist.md` for public-SDK boundary review passes. The repo
-config is `clawpatch.config.json`; generated `.clawpatch/` state stays local and
-ignored. Do not use Clawpatch as an automatic fixer. Optional care-domain drift
-checks count as evidence only when `GIVECARE_CARE_DOMAIN_SRC` is intentionally
-set.
-
 ## Sync policy
 
 There is no default internal source path. Set `GIVECARE_CARE_DOMAIN_SRC` only when intentionally comparing against a reviewed source tree. `npm test` runs `check:care-domain`, but that check exits successfully with a skip message when `GIVECARE_CARE_DOMAIN_SRC` is unset; do not treat it as drift evidence unless the env var is present. The optional sync script is limited to these public-safe files:

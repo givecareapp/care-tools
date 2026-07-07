@@ -1,7 +1,6 @@
 # Agent artifacts
 .claude/
 .specify/
-.clawpatch/
 .codex/
 logs/
 reports/
