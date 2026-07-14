@@ -42,8 +42,12 @@ The GiveCare Score in this package is the **public, simplified** variant: a zone
 
 ## Install
 
+Not yet published to the npm registry. Install from source:
+
 ```bash
-npm install @givecare/tools
+git clone https://github.com/givecareapp/givecare-tools
+cd givecare-tools
+npm ci && npm run build
 ```
 
 ## Usage
