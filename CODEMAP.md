@@ -10,7 +10,7 @@ Pure TypeScript caregiver SDOH assessment and scoring toolkit. Zero runtime depe
 
 | Path | Purpose | Key Exports |
 |------|---------|-------------|
-| src/assessments/ | Instrument definitions + scoring | `scoreInstrument()`, `getInstrument()`, `getSdoh30QuestionsForZones()` |
+| src/assessments/ | Instrument definitions + scoring | `scoreInstrument()`, `getInstrument()`, `getSdoh30QuestionsForDomains()` |
 | src/scoring/ | Composite GiveCare Score (0-100) | `computeGiveCareScore()`, `computeGiveCareScoreFromInstruments()`, `detectSpike()` |
 | src/sms/ | Public SMS interoperability helpers | `parseRegulatoryKeyword()`, `adjustForQuietHours()` |
 | src/geo/ | Geographic utilities | `inferTimezoneFromAreaCode()`, `zipToState()` |
@@ -35,19 +35,19 @@ Pure TypeScript caregiver SDOH assessment and scoring toolkit. Zero runtime depe
 ```text
 Instrument responses (0-4 deficit scale)
   -> scoreInstrument() -> subscores per domain
-  -> mapInstrumentToZones() -> normalized 0-1 zone data points
-  -> mergeZoneData() -> combined multi-instrument data
-  -> computeZoneScores() -> zone scores 0-100
+  -> mapInstrumentToDomains() -> normalized 0-1 domain data points
+  -> mergeDomainData() -> combined structural data
+  -> computeDomainScores() -> domain scores 0-100
   -> computeGiveCareScore() -> composite score + band + pressures/supports
-  -> flaggedZones() -> zones needing SDOH-30 deep-dive
+  -> flaggedDomains() -> domains eligible for a GC-SDOH-30 branch
 ```
 
 ## Key Patterns
 
-- **Zone Model**: Six priority zones P1-P6, weighted 0.1-0.2, scored 0-100.
+- **Domain Model**: Six caregiver load domains GC1-GC6, weighted 0.1-0.2, scored 0-100.
 - **Deficit Framing**: Higher raw value = worse outcome, inverted during normalization.
-- **Instrument Routing**: `mapInstrumentToZones()` dispatches by instrument name to zone mappings.
-- **Adaptive Assessment**: SDOH-6/EMA-3 identify flagged zones; SDOH-30 deepens only flagged zones.
+- **Instrument Routing**: `mapInstrumentToDomains()` dispatches structural instruments by canonical machine ID.
+- **Progressive Assessment**: GC-SDOH-6 establishes the structural baseline; GC-SDOH-30 optionally asks four more questions in one flagged domain; EMA-3 retains a native reading and updates the current composite after baseline.
 - **Public-Safe Sync**: `scripts/sync-care-domain.mjs` optionally compares basic helpers against `GIVECARE_CARE_DOMAIN_SRC`. Quiet-hours helpers are locally owned in this public package.
 
 ## Common Tasks
@@ -55,8 +55,8 @@ Instrument responses (0-4 deficit scale)
 | Task | Steps |
 |------|-------|
 | Sync helper drift | Run `GIVECARE_CARE_DOMAIN_SRC=/path/to/care-domain/src npm run check:care-domain` |
-| Add new public instrument | 1. Define in `assessments/instruments.ts` 2. Add zone mapping in `scoring/givecareScore.ts` 3. Add to `mapInstrumentToZones()` switch |
-| Add new zone | 1. Add to `ZoneCode` + `ZONES` 2. Add weight/label 3. Update instrument mappings and docs |
+| Add new public instrument | 1. Define in `assessments/instruments.ts` 2. Add domain mapping in `scoring/givecareScore.ts` 3. Add to `mapInstrumentToDomains()` switch |
+| Add new domain | 1. Add to `GCDomainCode` + `GC_DOMAINS` 2. Add weight/label 3. Update instrument mappings and docs |
 | Check package | Run `npm test && npm run build` |
 
 ## Explicit Non-Goals

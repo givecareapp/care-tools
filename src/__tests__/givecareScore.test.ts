@@ -2,20 +2,21 @@ import { describe, it, expect } from 'vitest'
 import {
   toBand,
   getConfidence,
-  mapEma3ToZones,
-  mapSdoh6ToZones,
-  mapSdoh30ToZones,
-  mapInstrumentToZones,
-  mergeZoneData,
-  computeZoneScores,
-  flaggedZones,
+  mapEma3ToDomains,
+  mapSdoh6ToDomains,
+  mapSdoh30ToDomains,
+  mapInstrumentToDomains,
+  mergeDomainData,
+  computeDomainScores,
+  flaggedDomains,
   computeGiveCareScore,
   computeGiveCareScoreFromInstruments,
+  computeEmaReading,
   computeScoreTrend,
   detectSpike,
-  ZONES,
-  ZONE_LABELS,
-  ZONE_WEIGHTS,
+  GC_DOMAINS,
+  GC_DOMAIN_LABELS,
+  GC_DOMAIN_WEIGHTS,
 } from '../scoring/givecareScore'
 
 // ---------------------------------------------------------------------------
@@ -49,232 +50,232 @@ describe('toBand', () => {
 describe('getConfidence', () => {
   it('returns early_estimate for 0 or 1 instruments', () => {
     expect(getConfidence([])).toBe('early_estimate')
-    expect(getConfidence(['sdoh6'])).toBe('early_estimate')
+    expect(getConfidence(['gc_sdoh6'])).toBe('early_estimate')
   })
 
   it('returns building for 2 instruments', () => {
-    expect(getConfidence(['sdoh6', 'ema3'])).toBe('building')
+    expect(getConfidence(['gc_sdoh6', 'ema3'])).toBe('building')
   })
 
   it('returns solid for 3+ instruments', () => {
-    expect(getConfidence(['sdoh6', 'ema3', 'sdoh30'])).toBe('solid')
+    expect(getConfidence(['gc_sdoh6', 'ema3', 'gc_sdoh30'])).toBe('solid')
     expect(getConfidence(['a', 'b', 'c', 'd'])).toBe('solid')
   })
 })
 
 // ---------------------------------------------------------------------------
-// Zone constants
+// Domain constants
 // ---------------------------------------------------------------------------
-describe('zone constants', () => {
-  it('has 6 zones P1-P6', () => {
-    expect(ZONES).toEqual(['P1', 'P2', 'P3', 'P4', 'P5', 'P6'])
+describe('domain constants', () => {
+  it('has 6 domains GC1-GC6', () => {
+    expect(GC_DOMAINS).toEqual(['GC1', 'GC2', 'GC3', 'GC4', 'GC5', 'GC6'])
   })
 
-  it('zone weights sum to 1.0', () => {
-    const sum = Object.values(ZONE_WEIGHTS).reduce((a, b) => a + b, 0)
+  it('domain weights sum to 1.0', () => {
+    const sum = Object.values(GC_DOMAIN_WEIGHTS).reduce((a, b) => a + b, 0)
     expect(sum).toBeCloseTo(1.0)
   })
 
-  it('each zone has a label', () => {
-    for (const z of ZONES) {
-      expect(ZONE_LABELS[z]).toBeTruthy()
+  it('each domain has a label', () => {
+    for (const z of GC_DOMAINS) {
+      expect(GC_DOMAIN_LABELS[z]).toBeTruthy()
     }
   })
 })
 
 // ---------------------------------------------------------------------------
-// mapEma3ToZones
+// mapEma3ToDomains
 // ---------------------------------------------------------------------------
-describe('mapEma3ToZones', () => {
-  it('maps stress to P2 (inverted)', () => {
+describe('mapEma3ToDomains', () => {
+  it('maps stress to GC2 (inverted)', () => {
     // stress=0 → normalizeItem(0,0,4,true) = 1-0 = 1.0
-    const data = mapEma3ToZones({ stress: 0 })
-    expect(data.P2).toBeDefined()
-    expect(data.P2![0].value).toBe(1.0)
-    expect(data.P2![0].instrument).toBe('ema3')
+    const data = mapEma3ToDomains({ stress: 0 })
+    expect(data.GC2).toBeDefined()
+    expect(data.GC2![0].value).toBe(1.0)
+    expect(data.GC2![0].instrument).toBe('ema3')
   })
 
-  it('maps stress=4 to P2 as 0 (inverted)', () => {
-    const data = mapEma3ToZones({ stress: 4 })
-    expect(data.P2![0].value).toBe(0)
+  it('maps stress=4 to GC2 as 0 (inverted)', () => {
+    const data = mapEma3ToDomains({ stress: 4 })
+    expect(data.GC2![0].value).toBe(0)
   })
 
-  it('maps mood and coping to P6 (direct)', () => {
-    const data = mapEma3ToZones({ mood: 4, coping: 4 })
-    expect(data.P6).toHaveLength(2)
-    expect(data.P6![0].value).toBe(1.0) // 4/4 direct
-    expect(data.P6![1].value).toBe(1.0)
+  it('maps mood and coping to GC6 (direct)', () => {
+    const data = mapEma3ToDomains({ mood: 4, coping: 4 })
+    expect(data.GC6).toHaveLength(2)
+    expect(data.GC6![0].value).toBe(1.0) // 4/4 direct
+    expect(data.GC6![1].value).toBe(1.0)
   })
 
-  it('maps mood=0 and coping=0 to P6 as 0 (direct)', () => {
-    const data = mapEma3ToZones({ mood: 0, coping: 0 })
-    expect(data.P6![0].value).toBe(0)
-    expect(data.P6![1].value).toBe(0)
+  it('maps mood=0 and coping=0 to GC6 as 0 (direct)', () => {
+    const data = mapEma3ToDomains({ mood: 0, coping: 0 })
+    expect(data.GC6![0].value).toBe(0)
+    expect(data.GC6![1].value).toBe(0)
   })
 
   it('returns empty for empty subscores', () => {
-    const data = mapEma3ToZones({})
+    const data = mapEma3ToDomains({})
     expect(Object.keys(data)).toHaveLength(0)
   })
 })
 
 // ---------------------------------------------------------------------------
-// mapSdoh6ToZones
+// mapSdoh6ToDomains
 // ---------------------------------------------------------------------------
-describe('mapSdoh6ToZones', () => {
-  it('maps all 6 domains to correct zones (inverted/deficit-framed)', () => {
-    const data = mapSdoh6ToZones({
+describe('mapSdoh6ToDomains', () => {
+  it('maps all 6 domains to correct domains (inverted/deficit-framed)', () => {
+    const data = mapSdoh6ToDomains({
       social: 0, health: 0, housing: 0,
       financial: 0, navigation: 0, burnout: 0,
     })
     // 0 deficit → inverted → 1.0 (good)
-    expect(data.P1![0].value).toBe(1.0)
-    expect(data.P2![0].value).toBe(1.0)
-    expect(data.P3![0].value).toBe(1.0)
-    expect(data.P4![0].value).toBe(1.0)
-    expect(data.P5![0].value).toBe(1.0)
-    expect(data.P6![0].value).toBe(1.0)
+    expect(data.GC1![0].value).toBe(1.0)
+    expect(data.GC2![0].value).toBe(1.0)
+    expect(data.GC3![0].value).toBe(1.0)
+    expect(data.GC4![0].value).toBe(1.0)
+    expect(data.GC5![0].value).toBe(1.0)
+    expect(data.GC6![0].value).toBe(1.0)
   })
 
   it('max deficit maps to 0', () => {
-    const data = mapSdoh6ToZones({
+    const data = mapSdoh6ToDomains({
       social: 4, health: 4, housing: 4,
       financial: 4, navigation: 4, burnout: 4,
     })
-    for (const z of ZONES) {
+    for (const z of GC_DOMAINS) {
       expect(data[z]![0].value).toBe(0)
     }
   })
 
   it('maps partial subscores', () => {
-    const data = mapSdoh6ToZones({ social: 2 })
-    expect(data.P1).toBeDefined()
-    expect(data.P2).toBeUndefined()
+    const data = mapSdoh6ToDomains({ social: 2 })
+    expect(data.GC1).toBeDefined()
+    expect(data.GC2).toBeUndefined()
   })
 })
 
 // ---------------------------------------------------------------------------
-// mapSdoh30ToZones
+// mapSdoh30ToDomains
 // ---------------------------------------------------------------------------
-describe('mapSdoh30ToZones', () => {
-  it('groups responses by zone prefix', () => {
-    const data = mapSdoh30ToZones([
-      { questionId: 'P1-1', value: 0 },
-      { questionId: 'P1-2', value: 2 },
-      { questionId: 'P3-1', value: 4 },
+describe('mapSdoh30ToDomains', () => {
+  it('groups responses by domain prefix', () => {
+    const data = mapSdoh30ToDomains([
+      { questionId: 'GC1-1', value: 0 },
+      { questionId: 'GC1-2', value: 2 },
+      { questionId: 'GC3-1', value: 4 },
     ])
-    expect(data.P1).toHaveLength(2)
-    expect(data.P3).toHaveLength(1)
-    expect(data.P2).toBeUndefined()
+    expect(data.GC1).toHaveLength(2)
+    expect(data.GC3).toHaveLength(1)
+    expect(data.GC2).toBeUndefined()
   })
 
   it('inverts deficit-framed values', () => {
-    const data = mapSdoh30ToZones([{ questionId: 'P1-1', value: 0 }])
+    const data = mapSdoh30ToDomains([{ questionId: 'GC1-1', value: 0 }])
     // 0 deficit → 1.0 wellbeing
-    expect(data.P1![0].value).toBe(1.0)
+    expect(data.GC1![0].value).toBe(1.0)
   })
 
-  it('skips invalid zone prefixes', () => {
-    const data = mapSdoh30ToZones([{ questionId: 'XX-1', value: 2 }])
+  it('skips invalid domain prefixes', () => {
+    const data = mapSdoh30ToDomains([{ questionId: 'XX-1', value: 2 }])
     expect(Object.keys(data)).toHaveLength(0)
   })
 
   it('returns empty for empty input', () => {
-    const data = mapSdoh30ToZones([])
+    const data = mapSdoh30ToDomains([])
     expect(Object.keys(data)).toHaveLength(0)
   })
 })
 
 // ---------------------------------------------------------------------------
-// mapInstrumentToZones (router)
+// mapInstrumentToDomains (router)
 // ---------------------------------------------------------------------------
-describe('mapInstrumentToZones', () => {
+describe('mapInstrumentToDomains', () => {
   it('routes ema3', () => {
-    const data = mapInstrumentToZones('ema3', { stress: 2 })
-    expect(data.P2).toBeDefined()
+    const data = mapInstrumentToDomains('ema3', { stress: 2 })
+    expect(data.GC2).toBeDefined()
   })
 
   it('routes sdoh6', () => {
-    const data = mapInstrumentToZones('sdoh6', { social: 1 })
-    expect(data.P1).toBeDefined()
+    const data = mapInstrumentToDomains('gc_sdoh6', { social: 1 })
+    expect(data.GC1).toBeDefined()
   })
 
   it('routes sdoh30 by converting subscores to responses', () => {
-    const data = mapInstrumentToZones('sdoh30', { 'P4-1': 3 })
-    expect(data.P4).toBeDefined()
+    const data = mapInstrumentToDomains('gc_sdoh30', { 'GC4-1': 3 })
+    expect(data.GC4).toBeDefined()
   })
 
   it('returns empty for unknown instrument', () => {
-    const data = mapInstrumentToZones('unknown' as any, {})
+    const data = mapInstrumentToDomains('unknown' as any, {})
     expect(Object.keys(data)).toHaveLength(0)
   })
 })
 
 // ---------------------------------------------------------------------------
-// mergeZoneData
+// mergeDomainData
 // ---------------------------------------------------------------------------
-describe('mergeZoneData', () => {
+describe('mergeDomainData', () => {
   it('merges data from two sources', () => {
-    const a = { P1: [{ value: 0.8, instrument: 'sdoh6' }] }
-    const b = { P1: [{ value: 0.6, instrument: 'ema3' }], P2: [{ value: 0.5, instrument: 'ema3' }] }
-    const merged = mergeZoneData(a, b)
-    expect(merged.P1).toHaveLength(2)
-    expect(merged.P2).toHaveLength(1)
+    const a = { GC1: [{ value: 0.8, instrument: 'gc_sdoh6' }] }
+    const b = { GC1: [{ value: 0.6, instrument: 'ema3' }], GC2: [{ value: 0.5, instrument: 'ema3' }] }
+    const merged = mergeDomainData(a, b)
+    expect(merged.GC1).toHaveLength(2)
+    expect(merged.GC2).toHaveLength(1)
   })
 
   it('handles empty sources', () => {
-    const merged = mergeZoneData({}, {})
+    const merged = mergeDomainData({}, {})
     expect(Object.keys(merged)).toHaveLength(0)
   })
 })
 
 // ---------------------------------------------------------------------------
-// computeZoneScores
+// computeDomainScores
 // ---------------------------------------------------------------------------
-describe('computeZoneScores', () => {
+describe('computeDomainScores', () => {
   it('averages data points and scales to 0-100', () => {
     const data = {
-      P1: [{ value: 0.8, instrument: 'a' }, { value: 0.6, instrument: 'b' }],
+      GC1: [{ value: 0.8, instrument: 'a' }, { value: 0.6, instrument: 'b' }],
     }
-    const scores = computeZoneScores(data)
-    expect(scores.P1).toBe(70) // Math.round(0.7 * 100)
+    const scores = computeDomainScores(data)
+    expect(scores.GC1).toBe(70) // Math.round(0.7 * 100)
   })
 
   it('returns empty for no data', () => {
-    expect(Object.keys(computeZoneScores({}))).toHaveLength(0)
+    expect(Object.keys(computeDomainScores({}))).toHaveLength(0)
   })
 
   it('handles single data point', () => {
-    const scores = computeZoneScores({
-      P3: [{ value: 1.0, instrument: 'x' }],
+    const scores = computeDomainScores({
+      GC3: [{ value: 1.0, instrument: 'x' }],
     })
-    expect(scores.P3).toBe(100)
+    expect(scores.GC3).toBe(100)
   })
 })
 
 // ---------------------------------------------------------------------------
-// flaggedZones
+// flaggedDomains
 // ---------------------------------------------------------------------------
-describe('flaggedZones', () => {
-  it('flags zones below threshold (40)', () => {
-    const flagged = flaggedZones({ P1: 80, P2: 30, P3: 39 })
-    expect(flagged).toContain('P2')
-    expect(flagged).toContain('P3')
-    expect(flagged).not.toContain('P1')
+describe('flaggedDomains', () => {
+  it('flags domains below threshold (40)', () => {
+    const flagged = flaggedDomains({ GC1: 80, GC2: 30, GC3: 39 })
+    expect(flagged).toContain('GC2')
+    expect(flagged).toContain('GC3')
+    expect(flagged).not.toContain('GC1')
   })
 
-  it('does not flag zones at exactly 40', () => {
-    const flagged = flaggedZones({ P1: 40 })
-    expect(flagged).not.toContain('P1')
+  it('does not flag domains at exactly 40', () => {
+    const flagged = flaggedDomains({ GC1: 40 })
+    expect(flagged).not.toContain('GC1')
   })
 
-  it('returns empty when all zones are strong', () => {
-    const flagged = flaggedZones({ P1: 90, P2: 80, P3: 70, P4: 60, P5: 50, P6: 40 })
+  it('returns empty when all domains are strong', () => {
+    const flagged = flaggedDomains({ GC1: 90, GC2: 80, GC3: 70, GC4: 60, GC5: 50, GC6: 40 })
     expect(flagged).toHaveLength(0)
   })
 
-  it('returns empty for empty zone scores', () => {
-    expect(flaggedZones({})).toEqual([])
+  it('returns empty for empty domain scores', () => {
+    expect(flaggedDomains({})).toEqual([])
   })
 })
 
@@ -283,41 +284,41 @@ describe('flaggedZones', () => {
 // ---------------------------------------------------------------------------
 describe('computeGiveCareScore', () => {
   it('computes weighted score', () => {
-    // All zones at 80 → weighted average = 80
-    const zones = { P1: 80, P2: 80, P3: 80, P4: 80, P5: 80, P6: 80 }
-    const result = computeGiveCareScore(zones, ['sdoh6'])
+    // All domains at 80 → weighted average = 80
+    const domains = { GC1: 80, GC2: 80, GC3: 80, GC4: 80, GC5: 80, GC6: 80 }
+    const result = computeGiveCareScore(domains, ['gc_sdoh6'])
     expect(result.score).toBe(80)
     expect(result.band).toBe('strong')
     expect(result.bandLabel).toBe('Standing strong')
     expect(result.confidence).toBe('early_estimate')
   })
 
-  it('returns 0 when no zones have data', () => {
+  it('returns 0 when no domains have data', () => {
     const result = computeGiveCareScore({}, [])
     expect(result.score).toBe(0)
   })
 
   it('separates supports and pressures correctly', () => {
-    const zones = { P1: 70, P2: 30, P3: 10, P4: 90 }
-    const result = computeGiveCareScore(zones, ['sdoh6', 'ema3'])
-    expect(result.supports.map(s => s.zone)).toEqual(expect.arrayContaining(['P1', 'P4']))
-    expect(result.pressures.map(p => p.zone)).toEqual(expect.arrayContaining(['P2', 'P3']))
+    const domains = { GC1: 70, GC2: 30, GC3: 10, GC4: 90 }
+    const result = computeGiveCareScore(domains, ['gc_sdoh6', 'ema3'])
+    expect(result.supports.map(s => s.domain)).toEqual(expect.arrayContaining(['GC1', 'GC4']))
+    expect(result.pressures.map(p => p.domain)).toEqual(expect.arrayContaining(['GC2', 'GC3']))
     // pressures sorted ascending
     expect(result.pressures[0].score).toBeLessThanOrEqual(result.pressures[1].score)
     // topPressure is the worst
-    expect(result.topPressure!.zone).toBe('P3')
+    expect(result.topPressure!.domain).toBe('GC3')
   })
 
   it('topPressure is null when no pressures', () => {
-    const result = computeGiveCareScore({ P1: 80 }, [])
+    const result = computeGiveCareScore({ GC1: 80 }, [])
     expect(result.topPressure).toBeNull()
   })
 
   it('reflects correct confidence level', () => {
-    const zones = { P1: 50 }
-    expect(computeGiveCareScore(zones, ['sdoh6', 'ema3', 'sdoh30']).confidence).toBe('solid')
-    expect(computeGiveCareScore(zones, ['sdoh6', 'ema3']).confidence).toBe('building')
-    expect(computeGiveCareScore(zones, ['sdoh6']).confidence).toBe('early_estimate')
+    const domains = { GC1: 50 }
+    expect(computeGiveCareScore(domains, ['gc_sdoh6', 'ema3', 'gc_sdoh30']).confidence).toBe('solid')
+    expect(computeGiveCareScore(domains, ['gc_sdoh6', 'ema3']).confidence).toBe('building')
+    expect(computeGiveCareScore(domains, ['gc_sdoh6']).confidence).toBe('early_estimate')
   })
 })
 
@@ -328,23 +329,23 @@ describe('computeGiveCareScoreFromInstruments', () => {
   it('produces a score from SDOH-6 results', () => {
     const result = computeGiveCareScoreFromInstruments([
       {
-        instrument: 'sdoh6',
+        instrument: 'gc_sdoh6',
         subscores: {
           social: 0, health: 0, housing: 0,
           financial: 0, navigation: 0, burnout: 0,
         },
       },
     ])
-    // All 0 deficit → all zones = 100
+    // All 0 deficit → all domains = 100
     expect(result.score).toBe(100)
     expect(result.band).toBe('strong')
-    expect(result.instruments).toEqual(['sdoh6'])
+    expect(result.instruments).toEqual(['gc_sdoh6'])
   })
 
-  it('produces a score combining SDOH-6 and EMA-3', () => {
+  it('lets EMA-3 update the current GiveCare Score without replacing the structural baseline', () => {
     const result = computeGiveCareScoreFromInstruments([
       {
-        instrument: 'sdoh6',
+        instrument: 'gc_sdoh6',
         subscores: {
           social: 2, health: 2, housing: 2,
           financial: 2, navigation: 2, burnout: 2,
@@ -352,19 +353,57 @@ describe('computeGiveCareScoreFromInstruments', () => {
       },
       {
         instrument: 'ema3',
-        subscores: { stress: 2, mood: 2, coping: 2 },
+        subscores: { stress: 0, mood: 4, coping: 4 },
       },
     ])
-    expect(result.instruments).toEqual(['sdoh6', 'ema3'])
+    expect(result.instruments).toEqual(['gc_sdoh6', 'ema3'])
     expect(result.confidence).toBe('building')
-    expect(result.score).toBeGreaterThan(0)
-    expect(result.score).toBeLessThan(100)
+    expect(result.domains.GC2).toBe(75)
+    expect(result.domains.GC6).toBe(83)
+    expect(result.score).toBe(62)
+  })
+
+  it('keeps EMA-3 as a standalone reading until a structural baseline exists', () => {
+    const result = computeGiveCareScoreFromInstruments([
+      {
+        instrument: 'ema3',
+        subscores: { stress: 0, mood: 4, coping: 4 },
+      },
+    ])
+    expect(result.instruments).toEqual([])
+    expect(result.score).toBe(0)
+  })
+
+  it('uses targeted SDOH-30 answers to refine one matching domain', () => {
+    const result = computeGiveCareScoreFromInstruments([
+      {
+        instrument: 'gc_sdoh6',
+        subscores: {
+          social: 2, health: 2, housing: 2,
+          financial: 2, navigation: 2, burnout: 2,
+        },
+      },
+      {
+        instrument: 'gc_sdoh30',
+        subscores: { 'GC4-2': 4, 'GC4-3': 4, 'GC4-4': 4, 'GC4-5': 4 },
+      },
+    ])
+    expect(result.instruments).toEqual(['gc_sdoh6', 'gc_sdoh30'])
+    expect(result.domains.GC4).toBe(10)
+    expect(result.score).toBe(42)
   })
 
   it('handles empty instrument list', () => {
     const result = computeGiveCareScoreFromInstruments([])
     expect(result.score).toBe(0)
     expect(result.instruments).toEqual([])
+  })
+})
+
+describe('computeEmaReading', () => {
+  it('normalizes stress, mood, and coping into a separate reading', () => {
+    expect(computeEmaReading({ stress: 2, mood: 2, coping: 2 }).score).toBe(50)
+    expect(computeEmaReading({ stress: 0, mood: 4, coping: 4 }).score).toBe(100)
   })
 })
 

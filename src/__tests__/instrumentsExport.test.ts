@@ -3,7 +3,7 @@ import { buildInstrumentExport } from '../assessments/instrumentExport'
 
 // The committed snapshot `data/instruments-export.json` is the canonical shared
 // instrument artifact downstream copies gate against (gc-evals validate.py,
-// gc-sms production-delta test). It is regenerated with `npm run export:instruments`
+// gc-sms instrument sync). It is regenerated with `npm run export:instruments`
 // (vitest `-u`) and verified here in `npm run ci`, so a source edit that is not
 // re-exported fails the build.
 const SNAPSHOT_PATH = '../../data/instruments-export.json'
@@ -17,16 +17,24 @@ describe('instruments export snapshot', () => {
     await expect(serialize()).toMatchFileSnapshot(SNAPSHOT_PATH)
   })
 
-  it('projects all three instruments with ids, prompts, and zones', () => {
+  it('projects all three instruments with ids, prompts, and domains', () => {
     const snap = buildInstrumentExport()
-    expect(Object.keys(snap.instruments)).toEqual(['sdoh6', 'ema3', 'sdoh30'])
-    expect(snap.instruments.sdoh6).toHaveLength(6)
+    expect(Object.keys(snap.instruments)).toEqual(['gc_sdoh6', 'ema3', 'gc_sdoh30'])
+    expect(snap.instruments.gc_sdoh6).toHaveLength(6)
     expect(snap.instruments.ema3).toHaveLength(3)
-    expect(snap.instruments.sdoh30).toHaveLength(30)
-    // SDOH-6 and SDOH-30 are zone-anchored; EMA-3 is multi-mapped and carries none.
-    expect(snap.instruments.sdoh6.every(q => q.zone !== undefined)).toBe(true)
-    expect(snap.instruments.sdoh30.every(q => q.zone !== undefined)).toBe(true)
-    expect(snap.instruments.ema3.every(q => q.zone === undefined)).toBe(true)
-    expect(snap.zoneWeights).toEqual({ P1: 0.2, P2: 0.2, P3: 0.1, P4: 0.2, P5: 0.1, P6: 0.2 })
+    expect(snap.instruments.gc_sdoh30).toHaveLength(30)
+    // SDOH-6 and SDOH-30 are domain-anchored; EMA-3 is a separate reading.
+    expect(snap.instruments.gc_sdoh6.every(q => q.gcDomain !== undefined)).toBe(true)
+    expect(snap.instruments.gc_sdoh30.every(q => q.gcDomain !== undefined)).toBe(true)
+    expect(snap.instruments.ema3.every(q => q.gcDomain === undefined)).toBe(true)
+    expect(snap.domainWeights).toEqual({ GC1: 0.2, GC2: 0.2, GC3: 0.1, GC4: 0.2, GC5: 0.1, GC6: 0.2 })
+    expect(snap.domainLabels).toEqual({
+      GC1: 'Social Support',
+      GC2: 'Physical Health',
+      GC3: 'Housing & Environment',
+      GC4: 'Financial Resources',
+      GC5: 'Navigation',
+      GC6: 'Emotional Wellbeing',
+    })
   })
 })

@@ -1,5 +1,5 @@
 import { getInstrument, SDOH30_QUESTIONS } from './instruments'
-import { ZONE_WEIGHTS, SDOH6_ZONE_MAP, type ZoneCode } from '../scoring/givecareScore'
+import { GC_DOMAIN_LABELS, GC_DOMAIN_WEIGHTS, SDOH6_DOMAIN_MAP, type GCDomainCode } from '../scoring/givecareScore'
 
 /**
  * The shared, machine-readable projection of the public SDOH instruments.
@@ -8,32 +8,31 @@ import { ZONE_WEIGHTS, SDOH6_ZONE_MAP, type ZoneCode } from '../scoring/givecare
  * artifact downstream copies gate against:
  *   - `../gc-evals/scripts/validate.py` parity-checks its distribution records
  *     against `data/instruments-export.json`.
- *   - The production runtime (`../gc-sms/src/scoring.ts`) is documented as
- *     intentionally divergent in `data/production-delta.json`.
+ *   - The production runtime syncs this artifact without redefining questions.
  *
  * Only the fields that must not silently drift live here: instrument ids,
- * question ids + prompts, per-question zones (where the instrument defines one),
- * and the composite zone weights. Human-facing packaging copy (titles,
+ * question ids + prompts, per-question GC domains (where defined), and the
+ * structural composite weights. Human-facing packaging copy (titles,
  * descriptions, cadence, license notes, band labels) stays in the gc-evals
  * distribution record, not in the code definition.
  */
 export interface ExportedQuestion {
   readonly id: string
   readonly prompt: string
-  /** Present for zone-anchored instruments (SDOH-6, SDOH-30); absent for the
-   * multi-mapped EMA-3, whose items fan out to more than one zone in scoring. */
-  readonly zone?: ZoneCode
+  /** Present for domain-anchored instruments; EMA-3 is a separate reading. */
+  readonly gcDomain?: GCDomainCode
 }
 
 export interface InstrumentExport {
   readonly note: string
   readonly version: string
   readonly instruments: {
-    readonly sdoh6: readonly ExportedQuestion[]
+    readonly gc_sdoh6: readonly ExportedQuestion[]
     readonly ema3: readonly ExportedQuestion[]
-    readonly sdoh30: readonly ExportedQuestion[]
+    readonly gc_sdoh30: readonly ExportedQuestion[]
   }
-  readonly zoneWeights: Readonly<Record<ZoneCode, number>>
+  readonly domainWeights: Readonly<Record<GCDomainCode, number>>
+  readonly domainLabels: Readonly<Record<GCDomainCode, string>>
 }
 
 const EXPORT_NOTE =
@@ -44,25 +43,26 @@ const EXPORT_NOTE =
 
 /** Build the deterministic shared-instrument snapshot from the source of truth. */
 export function buildInstrumentExport(): InstrumentExport {
-  const sdoh6: ExportedQuestion[] = getInstrument('sdoh6').questions.map(q => ({
+  const gcSdoh6: ExportedQuestion[] = getInstrument('gc_sdoh6').questions.map(q => ({
     id: q.id,
     prompt: q.prompt,
-    zone: SDOH6_ZONE_MAP[q.id],
+    gcDomain: SDOH6_DOMAIN_MAP[q.id],
   }))
   const ema3: ExportedQuestion[] = getInstrument('ema3').questions.map(q => ({
     id: q.id,
     prompt: q.prompt,
   }))
-  const sdoh30: ExportedQuestion[] = SDOH30_QUESTIONS.map(q => ({
+  const gcSdoh30: ExportedQuestion[] = SDOH30_QUESTIONS.map(q => ({
     id: q.id,
     prompt: q.prompt,
-    zone: q.zone,
+    gcDomain: q.gcDomain,
   }))
 
   return {
     note: EXPORT_NOTE,
-    version: getInstrument('sdoh6').version,
-    instruments: { sdoh6, ema3, sdoh30 },
-    zoneWeights: ZONE_WEIGHTS,
+    version: getInstrument('gc_sdoh6').version,
+    instruments: { gc_sdoh6: gcSdoh6, ema3, gc_sdoh30: gcSdoh30 },
+    domainWeights: GC_DOMAIN_WEIGHTS,
+    domainLabels: GC_DOMAIN_LABELS,
   }
 }

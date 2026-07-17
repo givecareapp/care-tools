@@ -1,6 +1,6 @@
-export type InstrumentName = 'sdoh6' | 'ema3' | 'sdoh30'
+export type InstrumentName = 'gc_sdoh6' | 'ema3' | 'gc_sdoh30'
 
-export type ZoneCode = 'P1' | 'P2' | 'P3' | 'P4' | 'P5' | 'P6'
+export type GCDomainCode = 'GC1' | 'GC2' | 'GC3' | 'GC4' | 'GC5' | 'GC6'
 
 export interface AssessmentQuestion {
   readonly id: string
@@ -29,7 +29,7 @@ export interface Sdoh30Question {
   readonly prompt: string
   readonly min: number
   readonly max: number
-  readonly zone: ZoneCode
+  readonly gcDomain: GCDomainCode
 }
 
 function freezeItems<T extends object>(items: readonly T[]): readonly Readonly<T>[] {
@@ -43,11 +43,11 @@ function freezeInstrument(instrument: AssessmentInstrument): AssessmentInstrumen
   })
 }
 
-// SDOH-6: Six-domain snapshot (Tier 1 quick screen)
+// GC-SDOH-6: six-domain structural baseline.
 const SDOH6: AssessmentInstrument = freezeInstrument({
-  instrument: 'sdoh6',
-  version: 'v1',
-  title: 'SDOH six-domain snapshot',
+  instrument: 'gc_sdoh6',
+  version: 'v2',
+  title: 'GC-SDOH-6',
   questions: [
     {
       id: 'financial',
@@ -97,7 +97,7 @@ const SDOH6: AssessmentInstrument = freezeInstrument({
 // EMA-3: Daily wellbeing micro-check
 const EMA3: AssessmentInstrument = freezeInstrument({
   instrument: 'ema3',
-  version: 'v1',
+  version: 'v2',
   title: 'Daily wellbeing micro-check',
   questions: [
     {
@@ -124,252 +124,252 @@ const EMA3: AssessmentInstrument = freezeInstrument({
   ],
 })
 
-// SDOH-30: Adaptive deep-dive (5 questions per zone, 0-4 deficit-framed)
-// Aligned to P1-P6 zones. Informed by PRAPARE/AHC-HRSN. Administered selectively per flagged zone.
+// GC-SDOH-30: 30-item bank, administered as four additional questions in one
+// domain flagged by GC-SDOH-6.
 export const SDOH30_QUESTIONS: readonly Sdoh30Question[] = freezeItems([
-  // P1: Social Support
+  // GC1: Social Support
   {
-    id: 'P1-1',
+    id: 'GC1-1',
     prompt: 'How often do you feel you have no one to talk to about caregiving?',
     min: 0,
     max: 4,
-    zone: 'P1',
+    gcDomain: 'GC1',
   },
   {
-    id: 'P1-2',
+    id: 'GC1-2',
     prompt: 'How hard is it to find someone to step in when you need a break?',
     min: 0,
     max: 4,
-    zone: 'P1',
+    gcDomain: 'GC1',
   },
   {
-    id: 'P1-3',
+    id: 'GC1-3',
     prompt: 'How often do you feel isolated because of your caregiving role?',
     min: 0,
     max: 4,
-    zone: 'P1',
+    gcDomain: 'GC1',
   },
   {
-    id: 'P1-4',
+    id: 'GC1-4',
     prompt: 'How difficult is it to ask family or friends for help?',
     min: 0,
     max: 4,
-    zone: 'P1',
+    gcDomain: 'GC1',
   },
   {
-    id: 'P1-5',
+    id: 'GC1-5',
     prompt: 'How often do you feel you handle everything alone?',
     min: 0,
     max: 4,
-    zone: 'P1',
+    gcDomain: 'GC1',
   },
 
-  // P2: Physical Health
+  // GC2: Physical Health
   {
-    id: 'P2-1',
+    id: 'GC2-1',
     prompt: 'How much has caregiving worsened your physical health?',
     min: 0,
     max: 4,
-    zone: 'P2',
+    gcDomain: 'GC2',
   },
   {
-    id: 'P2-2',
+    id: 'GC2-2',
     prompt: 'How often are you too exhausted to take care of yourself?',
     min: 0,
     max: 4,
-    zone: 'P2',
+    gcDomain: 'GC2',
   },
   {
-    id: 'P2-3',
+    id: 'GC2-3',
     prompt: 'How hard is it to get enough sleep because of caregiving?',
     min: 0,
     max: 4,
-    zone: 'P2',
+    gcDomain: 'GC2',
   },
   {
-    id: 'P2-4',
+    id: 'GC2-4',
     prompt: 'How often do you skip your own medical appointments?',
     min: 0,
     max: 4,
-    zone: 'P2',
+    gcDomain: 'GC2',
   },
   {
-    id: 'P2-5',
+    id: 'GC2-5',
     prompt: 'How much does caregiving interfere with eating well or exercising?',
     min: 0,
     max: 4,
-    zone: 'P2',
+    gcDomain: 'GC2',
   },
 
-  // P3: Housing & Environment
+  // GC3: Housing & Environment
   {
-    id: 'P3-1',
+    id: 'GC3-1',
     prompt: 'How unstable does your living situation feel right now?',
     min: 0,
     max: 4,
-    zone: 'P3',
+    gcDomain: 'GC3',
   },
   {
-    id: 'P3-2',
+    id: 'GC3-2',
     prompt: 'How hard is it to keep up with home repairs or maintenance?',
     min: 0,
     max: 4,
-    zone: 'P3',
+    gcDomain: 'GC3',
   },
   {
-    id: 'P3-3',
+    id: 'GC3-3',
     prompt: 'How often do safety or accessibility issues at home affect caregiving?',
     min: 0,
     max: 4,
-    zone: 'P3',
+    gcDomain: 'GC3',
   },
   {
-    id: 'P3-4',
+    id: 'GC3-4',
     prompt: 'How difficult is it to get reliable transportation for care needs?',
     min: 0,
     max: 4,
-    zone: 'P3',
+    gcDomain: 'GC3',
   },
   {
-    id: 'P3-5',
+    id: 'GC3-5',
     prompt: 'How much does your neighborhood lack services you need?',
     min: 0,
     max: 4,
-    zone: 'P3',
+    gcDomain: 'GC3',
   },
 
-  // P4: Financial Resources
+  // GC4: Financial Resources
   {
-    id: 'P4-1',
+    id: 'GC4-1',
     prompt: 'How much financial strain is caregiving causing you?',
     min: 0,
     max: 4,
-    zone: 'P4',
+    gcDomain: 'GC4',
   },
   {
-    id: 'P4-2',
+    id: 'GC4-2',
     prompt: 'How often do costs prevent you from getting needed care help?',
     min: 0,
     max: 4,
-    zone: 'P4',
+    gcDomain: 'GC4',
   },
   {
-    id: 'P4-3',
+    id: 'GC4-3',
     prompt: 'How hard is it to find affordable caregiving support?',
     min: 0,
     max: 4,
-    zone: 'P4',
+    gcDomain: 'GC4',
   },
   {
-    id: 'P4-4',
+    id: 'GC4-4',
     prompt: 'How much has caregiving reduced your income or work hours?',
     min: 0,
     max: 4,
-    zone: 'P4',
+    gcDomain: 'GC4',
   },
   {
-    id: 'P4-5',
+    id: 'GC4-5',
     prompt: 'How worried are you about long-term financial security?',
     min: 0,
     max: 4,
-    zone: 'P4',
+    gcDomain: 'GC4',
   },
 
-  // P5: Legal & Navigation
+  // GC5: Legal & Navigation
   {
-    id: 'P5-1',
+    id: 'GC5-1',
     prompt: 'How hard is it to understand or navigate care system options?',
     min: 0,
     max: 4,
-    zone: 'P5',
+    gcDomain: 'GC5',
   },
   {
-    id: 'P5-2',
+    id: 'GC5-2',
     prompt: 'How often do confusing rules or paperwork slow you down?',
     min: 0,
     max: 4,
-    zone: 'P5',
+    gcDomain: 'GC5',
   },
   {
-    id: 'P5-3',
+    id: 'GC5-3',
     prompt: 'How difficult is it to find trustworthy information about benefits?',
     min: 0,
     max: 4,
-    zone: 'P5',
+    gcDomain: 'GC5',
   },
   {
-    id: 'P5-4',
+    id: 'GC5-4',
     prompt: 'How hard is it to deal with legal, insurance, or government forms?',
     min: 0,
     max: 4,
-    zone: 'P5',
+    gcDomain: 'GC5',
   },
   {
-    id: 'P5-5',
+    id: 'GC5-5',
     prompt: 'How often do you feel lost trying to coordinate between providers?',
     min: 0,
     max: 4,
-    zone: 'P5',
+    gcDomain: 'GC5',
   },
 
-  // P6: Emotional Wellbeing
+  // GC6: Emotional Wellbeing
   {
-    id: 'P6-1',
+    id: 'GC6-1',
     prompt: 'How overwhelmed do you feel by your caregiving responsibilities?',
     min: 0,
     max: 4,
-    zone: 'P6',
+    gcDomain: 'GC6',
   },
   {
-    id: 'P6-2',
+    id: 'GC6-2',
     prompt: 'How often do you feel anxious or worried about the future?',
     min: 0,
     max: 4,
-    zone: 'P6',
+    gcDomain: 'GC6',
   },
   {
-    id: 'P6-3',
+    id: 'GC6-3',
     prompt: 'How hard is it to find time for things that bring you joy?',
     min: 0,
     max: 4,
-    zone: 'P6',
+    gcDomain: 'GC6',
   },
   {
-    id: 'P6-4',
+    id: 'GC6-4',
     prompt: 'How often do you feel guilty about how you handle caregiving?',
     min: 0,
     max: 4,
-    zone: 'P6',
+    gcDomain: 'GC6',
   },
   {
-    id: 'P6-5',
+    id: 'GC6-5',
     prompt: 'How much has caregiving affected your sense of who you are?',
     min: 0,
     max: 4,
-    zone: 'P6',
+    gcDomain: 'GC6',
   },
 ])
 
 const SDOH30: AssessmentInstrument = freezeInstrument({
-  instrument: 'sdoh30',
-  version: 'v1',
-  title: 'Adaptive deep-dive social determinants (SDOH-30)',
-  questions: SDOH30_QUESTIONS.map(({ id, prompt, min, max, zone }) => ({
+  instrument: 'gc_sdoh30',
+  version: 'v2',
+  title: 'GC-SDOH-30',
+  questions: SDOH30_QUESTIONS.map(({ id, prompt, min, max, gcDomain }) => ({
     id,
     prompt,
     min,
     max,
-    domain: zone,
+    domain: gcDomain,
   })),
 })
 
 const INSTRUMENTS: Readonly<Record<InstrumentName, AssessmentInstrument>> = Object.freeze({
-  sdoh6: SDOH6,
+  gc_sdoh6: SDOH6,
   ema3: EMA3,
-  sdoh30: SDOH30,
+  gc_sdoh30: SDOH30,
 })
 
-export function getInstrument(instrument: InstrumentName, version = 'v1'): AssessmentInstrument {
+export function getInstrument(instrument: InstrumentName, version = 'v2'): AssessmentInstrument {
   const candidate = INSTRUMENTS[instrument]
   if (!candidate || candidate.version !== version) {
     throw new Error(`Unsupported instrument version: ${instrument}/${version}`)
@@ -407,21 +407,21 @@ export function scoreInstrument(
   }
 }
 
-/** Get SDOH-30 questions for specific zones (adaptive deep-dive). */
-export function getSdoh30QuestionsForZones(zones: readonly ZoneCode[]): Sdoh30Question[] {
-  const zoneSet = new Set(zones)
+/** Get the four additional GC-SDOH-30 questions for selected caregiver load domains. */
+export function getSdoh30QuestionsForDomains(domains: readonly GCDomainCode[]): Sdoh30Question[] {
+  const domainSet = new Set(domains)
   return SDOH30_QUESTIONS.filter(
-    q => zoneSet.has(q.zone) && q.id !== QUICK6_SDOH30_REPRESENTATIVE_IDS[q.zone]
+    q => domainSet.has(q.gcDomain) && q.id !== QUICK6_SDOH30_REPRESENTATIVE_IDS[q.gcDomain]
   )
 }
 
-const QUICK6_SDOH30_REPRESENTATIVE_IDS: Readonly<Record<ZoneCode, string>> = Object.freeze({
-  P1: 'P1-1',
-  P2: 'P2-1',
-  P3: 'P3-1',
-  P4: 'P4-1',
-  P5: 'P5-1',
-  P6: 'P6-1',
+const QUICK6_SDOH30_REPRESENTATIVE_IDS: Readonly<Record<GCDomainCode, string>> = Object.freeze({
+  GC1: 'GC1-1',
+  GC2: 'GC2-1',
+  GC3: 'GC3-1',
+  GC4: 'GC4-1',
+  GC5: 'GC5-1',
+  GC6: 'GC6-1',
 })
 
 /** All SDOH-30 item IDs in definition order. */
