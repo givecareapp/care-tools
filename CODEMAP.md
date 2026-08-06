@@ -15,7 +15,7 @@ logic. It is not a mirror of the production `care-domain` package.
 |------|---------|-------------|
 | src/assessments/ | Instrument definitions + scoring | `scoreInstrument()`, `getInstrument()`, `getSdoh30QuestionsForDomains()` |
 | src/scoring/ | Composite GiveCare Score (0-100) | `computeGiveCareScore()`, `computeGiveCareScoreFromInstruments()`, `detectSpike()` |
-| src/sms/ | Public SMS interoperability helpers | `parseRegulatoryKeyword()`, `adjustForQuietHours()` |
+| src/sms/ | Public SMS interoperability helpers | `parseRegulatoryCommand()`, `adjustForQuietHours()` |
 | src/geo/ | Geographic utilities | `inferTimezoneFromAreaCode()`, `zipToState()` |
 | src/lib/ | Shared helpers | `days()` |
 | scripts/ | Owner adapter | `hound-driver.ts` |

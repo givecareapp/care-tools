@@ -5,7 +5,6 @@
 > Open-source caregiver social-determinants assessment and scoring toolkit
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 ## Overview
 
@@ -105,7 +104,7 @@ const deepDiveQuestions = getSdoh30QuestionsForDomains(flagged)
 ```typescript
 import { scoreInstrument } from '@givecare/tools/assessments'
 import { computeGiveCareScore } from '@givecare/tools/scoring'
-import { parseRegulatoryKeyword } from '@givecare/tools/sms'
+import { parseRegulatoryCommand } from '@givecare/tools/sms'
 import { inferTimezoneFromAreaCode, zipToState } from '@givecare/tools/geo'
 import { zipToState as zipToStateOnly } from '@givecare/tools/geo/zip-to-state'
 ```
