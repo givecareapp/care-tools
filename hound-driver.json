@@ -1,0 +1,32 @@
+{
+  "schema_version": "hound.driver.v1",
+  "id": "gc-tools-instruments",
+  "protocol": "hound.protocol.v1",
+  "owner": {
+    "repo": "."
+  },
+  "exec": [
+    "./node_modules/.bin/tsx",
+    "scripts/hound-driver.ts"
+  ],
+  "capabilities": {
+    "corpus.project": {
+      "effect": "write",
+      "gate": "none"
+    }
+  },
+  "run_root": ".hound/runs",
+  "write_scopes": [
+    "data/instruments-export.json"
+  ],
+  "ignored_snapshot_excludes": [
+    ".hound",
+    "dist",
+    "logs",
+    "node_modules"
+  ],
+  "timeouts_seconds": {
+    "default": 120
+  },
+  "env_allowlist": []
+}

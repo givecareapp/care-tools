@@ -2,6 +2,7 @@
 .claude/
 .specify/
 .codex/
+.hound/
 logs/
 reports/
 state/

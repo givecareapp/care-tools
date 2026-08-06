@@ -9,27 +9,20 @@ All notable changes to `@givecare/tools` are documented here. The format follows
 ### Changed
 
 - **gc-tools is now the declared canonical owner of the public SDOH instrument
-  definition** (ids, question prompts, zones, scale, and composite scoring
+  definition** (ids, question prompts, domains, scale, and composite scoring
   semantics). Downstream copies gate against this repo instead of being
   hand-synced. Root `VISION.md` ownership table updated to match.
 
 ### Added
 
-- `npm run export:instruments` emits the canonical shared instrument snapshot to
-  `data/instruments-export.json` (deterministic, offline). The public sibling
-  `../gc-evals` parity-checks its distribution record against this file; freshness
-  is pinned by `npm run ci`.
+- Hound `corpus.project` is the only supported writer for the canonical shared
+  instrument snapshot at `data/instruments-export.json`. It binds exact bytes,
+  mode, and SHA-256 in its plan and verified run. It emits a public
+  `givecare.artifact-ref/v1` for consumers. The public sibling
+  `../gc-evals` syncs the exact verified artifact before adding its local
+  packaging overlay.
 - `src/assessments/instrumentExport.ts` — `buildInstrumentExport()`, the single
   builder behind the snapshot.
-- `data/production-delta.json` — the manifest of known, intentional divergences
-  between this public definition and the GiveCare production runtime
-  (`../gc-sms`): risk-band label `critical` (public) vs `severe` (production),
-  zone-weighted (public) vs instrument-weighted (production) composite, and the
-  BSFC-s instrument (production-only, licensing-restricted). Verified against the
-  sibling by `src/__tests__/productionDelta.test.ts`.
-- `SDOH6_ZONE_MAP` exported from `src/scoring/givecareScore.ts` — one canonical
-  SDOH-6 item → zone decision site, shared by `mapSdoh6ToZones` and the export.
-- README "Public vs production scoring" section.
 
 ## [3.0.0]
 

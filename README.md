@@ -34,7 +34,23 @@ All use a 0-4 response scale. SDOH items are deficit-framed; EMA mood and coping
 
 **Documentation:** See [GC-SDOH.md](./GC-SDOH.md) for complete questions, scoring, and implementation details.
 
-This repo is the **canonical owner of the public SDOH instrument definition** — the instrument ids, question prompts, domains, and scale. `npm run export:instruments` emits that shared definition to [`data/instruments-export.json`](./data/instruments-export.json); public distribution copies (e.g. the `givecare-evals` dataset) regenerate or parity-check against it rather than hand-syncing.
+This repo is the **canonical owner of the public SDOH instrument definition** — the instrument ids, question prompts, domains, and scale. Hound `corpus.project` is the only supported writer for [`data/instruments-export.json`](./data/instruments-export.json). Every downstream copy syncs the exact artifact from a verified Hound run and binds its `givecare.artifact-ref/v1`.
+
+Project a source change with Hound:
+
+```bash
+hound driver check --driver hound-driver.json
+hound plan --driver hound-driver.json --operation corpus.project \
+  --json '{"schema_version":"gc-tools.hound.project.input.v1"}' \
+  --as-of YYYY-MM-DD --output /tmp/gc-tools-project.json
+hound execute --driver hound-driver.json --plan /tmp/gc-tools-project.json
+# Run `hound verify <run_dir>` with the run directory from execute.
+```
+
+Hound binds the source repository, exact output bytes, final file mode, and
+artifact SHA-256 before it writes. The result emits a public
+`givecare.artifact-ref/v1` owned by `tools.assessments`. Downstream consumers
+bind that reference. They never invoke the builder or write the projection.
 
 ## Scoring model
 
@@ -108,30 +124,11 @@ src/
   geo/zipToState.ts              # ZIP → US state lookup
   lib/time.ts                    # days() helper
 data/
-  instruments-export.json        # Canonical shared instrument snapshot (npm run export:instruments)
+  instruments-export.json        # Canonical Hound-projected instrument snapshot
 scripts/
-  sync-care-domain.mjs           # Optional public-safe helper drift check
+  hound-driver.ts                 # Hound protocol adapter for corpus.project
+hound-driver.json                 # Hound capability and write scope
 ```
-
-## Care-domain sync policy
-
-This public repo owns its runtime surface. The optional sync script only runs when `GIVECARE_CARE_DOMAIN_SRC` points at a reviewed source tree, and it is limited to files that are safe and intentionally open:
-
-- `geo/timezone.ts`
-- `geo/zipToState.ts`
-- `lib/time.ts`
-- `sms/regulatory.ts`
-
-`sms/quietHours.ts` is locally owned in this public package; it is not currently mirrored from `care-domain`.
-
-Run only when comparing against an explicit source tree:
-
-```bash
-GIVECARE_CARE_DOMAIN_SRC=/path/to/care-domain/src npm run check:care-domain
-GIVECARE_CARE_DOMAIN_SRC=/path/to/care-domain/src npm run sync:care-domain
-```
-
-If `GIVECARE_CARE_DOMAIN_SRC` is unset, the drift check skips so the public repo remains usable standalone.
 
 ## Use cases
 

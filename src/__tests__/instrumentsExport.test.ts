@@ -1,20 +1,21 @@
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { describe, it, expect } from 'vitest'
 import { buildInstrumentExport } from '../assessments/instrumentExport'
 
 // The committed snapshot `data/instruments-export.json` is the canonical shared
-// instrument artifact downstream copies gate against (gc-evals validate.py,
-// gc-sms instrument sync). It is regenerated with `npm run export:instruments`
-// (vitest `-u`) and verified here in `npm run ci`, so a source edit that is not
-// re-exported fails the build.
-const SNAPSHOT_PATH = '../../data/instruments-export.json'
+// instrument artifact. Consumers sync its verified ArtifactRef. Hound
+// `corpus.project` regenerates it. `npm run ci` then rejects source changes that
+// were not projected.
+const SNAPSHOT_PATH = join(process.cwd(), 'data/instruments-export.json')
 
 function serialize(): string {
   return `${JSON.stringify(buildInstrumentExport(), null, 2)}\n`
 }
 
 describe('instruments export snapshot', () => {
-  it('data/instruments-export.json matches source (run `npm run export:instruments` if this fails)', async () => {
-    await expect(serialize()).toMatchFileSnapshot(SNAPSHOT_PATH)
+  it('data/instruments-export.json matches source (run Hound corpus.project if this fails)', () => {
+    expect(readFileSync(SNAPSHOT_PATH, 'utf8')).toBe(serialize())
   })
 
   it('projects all three instruments with ids, prompts, and domains', () => {

@@ -1,10 +1,13 @@
 # Codemap
 
-Generated: 2026-05-12
+Generated: 2026-08-06
 
 ## Architecture
 
-Pure TypeScript caregiver SDOH assessment and scoring toolkit. Zero runtime dependencies, zero I/O, zero framework imports. This repo is a public-safe subset of GiveCare domain logic, not a mirror of the production `care-domain` package.
+The published TypeScript toolkit has zero runtime dependencies, zero I/O, and
+zero framework imports. The owner-only Hound adapter projects its canonical
+instrument artifact. The package is a public-safe subset of GiveCare domain
+logic. It is not a mirror of the production `care-domain` package.
 
 ## Directory Structure
 
@@ -15,7 +18,8 @@ Pure TypeScript caregiver SDOH assessment and scoring toolkit. Zero runtime depe
 | src/sms/ | Public SMS interoperability helpers | `parseRegulatoryKeyword()`, `adjustForQuietHours()` |
 | src/geo/ | Geographic utilities | `inferTimezoneFromAreaCode()`, `zipToState()` |
 | src/lib/ | Shared helpers | `days()` |
-| scripts/ | Maintenance scripts | `sync-care-domain.mjs` |
+| scripts/ | Owner adapter | `hound-driver.ts` |
+| hound-driver.json | Hound capability boundary | `corpus.project` |
 
 ## Entry Points
 
@@ -40,6 +44,11 @@ Instrument responses (0-4 deficit scale)
   -> computeDomainScores() -> domain scores 0-100
   -> computeGiveCareScore() -> composite score + band + pressures/supports
   -> flaggedDomains() -> domains eligible for a GC-SDOH-30 branch
+
+Instrument TypeScript owner
+  -> Hound corpus.project plan -> exact byte + mode effects
+  -> Hound execute + verify -> data/instruments-export.json + run receipt
+  -> public givecare.artifact-ref/v1 -> downstream consumers sync exact bytes
 ```
 
 ## Key Patterns
@@ -48,13 +57,13 @@ Instrument responses (0-4 deficit scale)
 - **Deficit Framing**: Higher raw value = worse outcome, inverted during normalization.
 - **Instrument Routing**: `mapInstrumentToDomains()` dispatches structural instruments by canonical machine ID.
 - **Progressive Assessment**: GC-SDOH-6 establishes the structural baseline; GC-SDOH-30 optionally asks four more questions in one flagged domain; EMA-3 retains a native reading and updates the current composite after baseline.
-- **Public-Safe Sync**: `scripts/sync-care-domain.mjs` optionally compares basic helpers against `GIVECARE_CARE_DOMAIN_SRC`. Quiet-hours helpers are locally owned in this public package.
+- **Hound Projection**: `hound-driver.ts` is the only writer for the shared instrument export. Consumers bind its verified ArtifactRef.
 
 ## Common Tasks
 
 | Task | Steps |
 |------|-------|
-| Sync helper drift | Run `GIVECARE_CARE_DOMAIN_SRC=/path/to/care-domain/src npm run check:care-domain` |
+| Project instruments | Plan and execute `hound-driver.json#corpus.project`; verify the returned run directory |
 | Add new public instrument | 1. Define in `assessments/instruments.ts` 2. Add domain mapping in `scoring/givecareScore.ts` 3. Add to `mapInstrumentToDomains()` switch |
 | Add new domain | 1. Add to `GCDomainCode` + `GC_DOMAINS` 2. Add weight/label 3. Update instrument mappings and docs |
 | Check package | Run `npm test && npm run build` |

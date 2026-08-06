@@ -16,11 +16,12 @@ owns screening and program data.
 
 ## Invariants
 
-- Pure functions only: no network, database, secrets, or private product state.
+- Public package APIs are pure functions. They use no network, database,
+  secrets, or private product state.
 - GC-SDOH scoring, EMA readings, and GC1-GC6 meanings match `GC-SDOH.md`.
 - Public changes include matching tests and documentation.
-- Internal drift checks use explicit source paths. A skipped optional check is
-  not evidence of alignment.
+- Hound `corpus.project` is the only supported writer for the canonical
+  instrument export. Consumers sync its verified ArtifactRef.
 - Public extraction is deliberate; this repo never mirrors `gc-sms` wholesale.
 
 ## Current focus
