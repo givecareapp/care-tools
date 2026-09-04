@@ -16,7 +16,7 @@ import { afterEach, describe, expect, it } from 'vitest'
 
 const roots: string[] = []
 const DRIVER = join(process.cwd(), 'node_modules/.bin/tsx')
-const SCRIPT = join(process.cwd(), 'scripts/hound-driver.ts')
+const SCRIPT = join(process.cwd(), 'scripts/evidence-driver.ts')
 
 interface DriverResult {
   ok: boolean

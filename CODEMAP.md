@@ -5,7 +5,7 @@ Generated: 2026-08-06
 ## Architecture
 
 The published TypeScript toolkit has zero runtime dependencies, zero I/O, and
-zero framework imports. The owner-only Hound adapter projects its canonical
+zero framework imports. The owner-only Helm Evidence adapter projects its canonical
 instrument artifact. The package is a public-safe subset of GiveCare domain
 logic. It is not a mirror of the production `care-domain` package.
 
@@ -18,8 +18,8 @@ logic. It is not a mirror of the production `care-domain` package.
 | src/sms/ | Public SMS interoperability helpers | `parseRegulatoryCommand()`, `adjustForQuietHours()` |
 | src/geo/ | Geographic utilities | `inferTimezoneFromAreaCode()`, `zipToState()` |
 | src/lib/ | Shared helpers | `days()` |
-| scripts/ | Owner adapter | `hound-driver.ts` |
-| hound-driver.json | Hound capability boundary | `corpus.project` |
+| scripts/ | Owner adapter | `evidence-driver.ts` |
+| evidence-driver.json | Helm Evidence capability boundary | `corpus.project` |
 
 ## Entry Points
 
@@ -46,8 +46,8 @@ Instrument responses (0-4 deficit scale)
   -> flaggedDomains() -> domains eligible for a GC-SDOH-30 branch
 
 Instrument TypeScript owner
-  -> Hound corpus.project plan -> exact byte + mode effects
-  -> Hound execute + verify -> data/instruments-export.json + run receipt
+  -> Helm Evidence corpus.project plan -> exact byte + mode effects
+  -> Helm Evidence execute + verify -> data/instruments-export.json + run receipt
   -> public givecare.artifact-ref/v1 -> downstream consumers sync exact bytes
 ```
 
@@ -57,13 +57,13 @@ Instrument TypeScript owner
 - **Deficit Framing**: Higher raw value = worse outcome, inverted during normalization.
 - **Instrument Routing**: `mapInstrumentToDomains()` dispatches structural instruments by canonical machine ID.
 - **Progressive Assessment**: GC-SDOH-6 establishes the structural baseline; GC-SDOH-30 optionally asks four more questions in one flagged domain; EMA-3 retains a native reading and updates the current composite after baseline.
-- **Hound Projection**: `hound-driver.ts` is the only writer for the shared instrument export. Consumers bind its verified ArtifactRef.
+- **Helm Evidence projection**: `evidence-driver.ts` is the only writer for the shared instrument export. Consumers bind its verified ArtifactRef.
 
 ## Common Tasks
 
 | Task | Steps |
 |------|-------|
-| Project instruments | Plan and execute `hound-driver.json#corpus.project`; verify the returned run directory |
+| Project instruments | Plan and execute `evidence-driver.json#corpus.project`; verify the returned run directory |
 | Add new public instrument | 1. Define in `assessments/instruments.ts` 2. Add domain mapping in `scoring/givecareScore.ts` 3. Add to `mapInstrumentToDomains()` switch |
 | Add new domain | 1. Add to `GCDomainCode` + `GC_DOMAINS` 2. Add weight/label 3. Update instrument mappings and docs |
 | Check package | Run `npm test && npm run build` |

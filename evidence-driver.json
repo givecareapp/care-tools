@@ -7,7 +7,7 @@
   },
   "exec": [
     "./node_modules/.bin/tsx",
-    "scripts/hound-driver.ts"
+    "scripts/evidence-driver.ts"
   ],
   "capabilities": {
     "corpus.project": {
@@ -15,11 +15,12 @@
       "gate": "none"
     }
   },
-  "run_root": ".hound/runs",
+  "run_root": ".evidence/runs",
   "write_scopes": [
     "data/instruments-export.json"
   ],
   "ignored_snapshot_excludes": [
+    ".evidence",
     ".hound",
     "dist",
     "logs",

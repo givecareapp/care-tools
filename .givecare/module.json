@@ -23,12 +23,12 @@
         },
         {
           "kind": "projection-kernel",
-          "ref": "hound-driver.json#corpus.project"
+          "ref": "evidence-driver.json#corpus.project"
         }
       ],
       "verifiers": [
         "npm run ci",
-        "hound driver check --driver hound-driver.json"
+        "helm evidence driver check --driver evidence-driver.json"
       ],
       "capabilities": [
         {
@@ -68,8 +68,8 @@
           "effect": "write",
           "gate": "none",
           "adapter": {
-            "kind": "hound-operation",
-            "ref": "hound-driver.json#corpus.project"
+            "kind": "evidence-operation",
+            "ref": "evidence-driver.json#corpus.project"
           },
           "accepts": [
             "gc-tools.hound.project.input.v1"

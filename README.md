@@ -33,20 +33,20 @@ All use a 0-4 response scale. SDOH items are deficit-framed; EMA mood and coping
 
 **Documentation:** See [GC-SDOH.md](./GC-SDOH.md) for complete questions, scoring, and implementation details.
 
-This repo is the **canonical owner of the public SDOH instrument definition** — the instrument ids, question prompts, domains, and scale. Hound `corpus.project` is the only supported writer for [`data/instruments-export.json`](./data/instruments-export.json). Every downstream copy syncs the exact artifact from a verified Hound run and binds its `givecare.artifact-ref/v1`.
+This repo is the **canonical owner of the public SDOH instrument definition** — the instrument ids, question prompts, domains, and scale. Helm Evidence `corpus.project` is the only supported writer for [`data/instruments-export.json`](./data/instruments-export.json). Every downstream copy syncs the exact artifact from a verified Helm Evidence run and binds its `givecare.artifact-ref/v1`.
 
-Project a source change with Hound:
+Project a source change with Helm Evidence:
 
 ```bash
-hound driver check --driver hound-driver.json
-hound plan --driver hound-driver.json --operation corpus.project \
+helm evidence driver check --driver evidence-driver.json
+helm evidence plan --driver evidence-driver.json --operation corpus.project \
   --json '{"schema_version":"gc-tools.hound.project.input.v1"}' \
   --as-of YYYY-MM-DD --output /tmp/gc-tools-project.json
-hound execute --driver hound-driver.json --plan /tmp/gc-tools-project.json
-# Run `hound verify <run_dir>` with the run directory from execute.
+helm evidence execute --driver evidence-driver.json --plan /tmp/gc-tools-project.json
+# Run `helm evidence verify <run_dir>` with the run directory from execute.
 ```
 
-Hound binds the source repository, exact output bytes, final file mode, and
+Helm Evidence binds the source repository, exact output bytes, final file mode, and
 artifact SHA-256 before it writes. The result emits a public
 `givecare.artifact-ref/v1` owned by `tools.assessments`. Downstream consumers
 bind that reference. They never invoke the builder or write the projection.
@@ -123,10 +123,10 @@ src/
   geo/zipToState.ts              # ZIP → US state lookup
   lib/time.ts                    # days() helper
 data/
-  instruments-export.json        # Canonical Hound-projected instrument snapshot
+  instruments-export.json        # Canonical Helm Evidence-projected instrument snapshot
 scripts/
-  hound-driver.ts                 # Hound protocol adapter for corpus.project
-hound-driver.json                 # Hound capability and write scope
+  evidence-driver.ts              # Helm Evidence protocol adapter for corpus.project
+evidence-driver.json              # Helm Evidence capability and write scope
 ```
 
 ## Use cases
