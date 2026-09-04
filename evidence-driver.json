@@ -21,7 +21,6 @@
   ],
   "ignored_snapshot_excludes": [
     ".evidence",
-    ".hound",
     "dist",
     "logs",
     "node_modules"
